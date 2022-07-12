@@ -1,11 +1,14 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	"forum-spa/backend/src"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/websocket"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // We'll need to define an Upgrader
@@ -57,13 +60,47 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	reader(ws)
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Simple Server")
-}
-
 func main() {
+
+	// Create dummy data
+	db, err := sql.Open("sqlite3", "./example.db")
+	if err != nil {
+		fmt.Println(err.Error())
+		log.Fatal(1)
+	}
+	defer db.Close()
+	err = db.Ping()
+	if err != nil {
+		fmt.Println(err.Error())
+		log.Fatal(1)
+	}
+	src.CreateTables(db)
+	testPosts := []src.Post{
+		{Title: "Title1", Content: "Content1", CategoryArr: []string{"science", "education"}, CreatorUsrName: "DummyUser"},
+		{Title: "Title2", Content: "Content2", CategoryArr: []string{"education", "sports"}, CreatorUsrName: "DummyUser"},
+		{Title: "Title3", Content: "Content3", CategoryArr: []string{"sports", "lifehacks"}, CreatorUsrName: "DummyUser"},
+	}
+
+	// Check if the post table is empty, if not then avoid adding any more test posts
+	rowCount := 0
+	postRows, err := db.Query(`
+		SELECT * FROM post
+	`)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer postRows.Close()
+	for postRows.Next() {
+		rowCount++
+	}
+	if rowCount == 0 {
+		for _, post := range testPosts {
+			src.InsertPost(db, post)
+		}
+	}
+
 	fmt.Println("Server is starting")
-	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/", src.IndexHandler)
 	// mape our `/ws` endpoint to the `serveWs` function
 	http.HandleFunc("/ws", serveWs)
 	http.ListenAndServe(":8080", nil)
