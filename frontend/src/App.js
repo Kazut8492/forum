@@ -12,6 +12,7 @@ const App = () => {
     <BrowserRouter>
       <PostsProvider>
         <Routes>
+          <Route path={`/:category`} element={<Home />} />
           <Route path={`/`} element={<Home />} />
           <Route path={`/test/`} element={<TestPage />} />
           <Route path={`/signup/`} element={<Signup />} />
