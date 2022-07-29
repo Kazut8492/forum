@@ -6,29 +6,41 @@ import {PostsContext} from "./PostsContext"
 
 const Home = () => {
     const {posts, setPosts} = useContext(PostsContext)
-    const [filterCategory, setFilterCategory] = useState("")
+    const [filterCategory, setFilterCategory] = useState()
     const navigate = useNavigate();
     const {category} = useParams();
 
-    if (category && !["all", "science", "education", "sports", "lifehacks"].includes(category)) {
-        navigate(`/`)
+    // if (["science", "education", "sports", "lifehacks"].includes(category)) {
+    //     navigate(`/${category}`)
+    // }
+
+    // これが決め手。
+    if (category && !filterCategory) {
+        setFilterCategory(category)
     }
+
+
+    // useEffect(()=>{
+    //     setFilterCategory(category)
+    // },[category])
 
     const handleFilterCategoryChange = (event) => {
         setFilterCategory(event.target.value)
     }
 
     useEffect(() => {
-        if (filterCategory !== "all") {
+        if (filterCategory && !["all", "science", "education", "sports", "lifehacks"].includes(filterCategory)) {
+            navigate(`/`)
+        } else if (filterCategory && filterCategory !== "all") {
             navigate(`/${filterCategory}`)
         } else {
             navigate(`/`)
         }
     },[filterCategory])
 
-    // useEffect(()=>{
-    //     console.log(category)
-    // }, [category])
+    useEffect(()=>{
+        console.log(category)
+    }, [category])
 
     const styles = {
         hr : {
@@ -80,7 +92,7 @@ const Home = () => {
                 </div>
                 <div className="allposts-container">
                     {posts && posts.map((post) => {
-                        if (!category || post.CategoryArr.includes(category)){
+                        if (!filterCategory || filterCategory === "all" || post.CategoryArr.includes(filterCategory)){
                             return (<>
                                 <div className='post-container' key={post.Id}>
                                     <p className='title-text'>
