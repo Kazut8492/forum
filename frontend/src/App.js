@@ -3,14 +3,21 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css';
 import Home from "./links/Home"
 import TestPage from "./links/TestPage"
+import Signup from "./links/Signup"
+import Login from "./links/Login"
+import {PostsProvider} from "./links/PostsContext"
 
 const App = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path={`/`} element={<Home />} />
-        <Route path={`/test/`} element={<TestPage />} />
-      </Routes>
+      <PostsProvider>
+        <Routes>
+          <Route path={`/`} element={<Home />} />
+          <Route path={`/test/`} element={<TestPage />} />
+          <Route path={`/signup/`} element={<Signup />} />
+          <Route path={`/login/`} element={<Login />} />
+        </Routes>
+      </PostsProvider>
     </BrowserRouter>
   )
 }
