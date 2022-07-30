@@ -3,44 +3,39 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { connect, sendMsg } from "../api";
 import {PostsContext} from "./PostsContext"
 
-
 const Home = () => {
     const {posts, setPosts} = useContext(PostsContext)
     const [filterCategory, setFilterCategory] = useState()
     const navigate = useNavigate();
     const {category} = useParams();
 
-    // if (["science", "education", "sports", "lifehacks"].includes(category)) {
-    //     navigate(`/${category}`)
-    // }
-
-    // これが決め手。
+    // If user jumped to URL with category param, then set filter category with it.
     if (category && !filterCategory) {
         setFilterCategory(category)
     }
-
-
-    // useEffect(()=>{
-    //     setFilterCategory(category)
-    // },[category])
 
     const handleFilterCategoryChange = (event) => {
         setFilterCategory(event.target.value)
     }
 
+    const handleCardClick = (postID) => {
+        // Padding area is clickable. Margin area is not.
+        console.log(postID)
+        navigate(`/post/?id=${postID}`, {state:{postID}})
+    }
+
     useEffect(() => {
-        if (filterCategory && !["all", "science", "education", "sports", "lifehacks"].includes(filterCategory)) {
-            navigate(`/`)
-        } else if (filterCategory && filterCategory !== "all") {
+        if (["science", "education", "sports", "lifehacks"].includes(filterCategory)) {
             navigate(`/${filterCategory}`)
         } else {
             navigate(`/`)
         }
+        console.log(filterCategory)
     },[filterCategory])
 
-    useEffect(()=>{
-        console.log(category)
-    }, [category])
+    // useEffect(()=>{
+    //     console.log(category)
+    // }, [category])
 
     const styles = {
         hr : {
@@ -94,7 +89,7 @@ const Home = () => {
                     {posts && posts.map((post) => {
                         if (!filterCategory || filterCategory === "all" || post.CategoryArr.includes(filterCategory)){
                             return (<>
-                                <div className='post-container' key={post.Id}>
+                                <div className='post-container' key={post.ID} onClick={()=>{handleCardClick(post.ID)}}>
                                     <p className='title-text'>
                                         {post.Title}
                                     </p>
