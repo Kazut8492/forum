@@ -4,28 +4,68 @@ import { connect, sendMsg } from "../api";
 import {PostsContext} from "./PostsContext"
 
 const Home = () => {
-    const {posts, setPosts} = useContext(PostsContext)
     const [filterCategory, setFilterCategory] = useState()
+    const [postTitle, setPostTitle] = useState("")
+    const [postContent, setPostContent] = useState("")
+    const [postCategory, setPostCategory] = useState([])
+    const {posts, setPosts} = useContext(PostsContext)
     const navigate = useNavigate();
     const {category} = useParams();
+    const categoryList = ["science", "education", "sports", "lifehacks"]
 
     // If user jumped to URL with category param, then set filter category with it.
     if (category && !filterCategory) {
         setFilterCategory(category)
     }
 
-    const handleFilterCategoryChange = (event) => {
-        setFilterCategory(event.target.value)
+    const handleCardClick = (post) => {
+        // Padding area is clickable. Margin area is not.
+        navigate(`/post/?id=${post.ID}`, {state:{post}})
     }
 
-    const handleCardClick = (postID) => {
-        // Padding area is clickable. Margin area is not.
-        console.log(postID)
-        navigate(`/post/?id=${postID}`, {state:{postID}})
+    const handlePostSubmit = (event) => {
+        event.preventDefault();
+
+        const newPost = {
+            Title: postTitle,
+            Content: postContent,
+            CategoryArr: postCategory,
+        }
+
+        // Post to the server
+        fetch("http://localhost:8080", {
+            method:"POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type":"application/json",
+            },
+            body: JSON.stringify(newPost)
+        })
+        .then(response=>response.json())
+        .then(data=>{
+            // Why this data gives the list of posts...?
+            console.log(data)
+            event.target.reset()
+            setPostTitle("")
+            setPostContent("")
+        })
+        .catch(error=>console.log(error))
+    }
+
+    const handleCategoryCheck = (event) => {
+        let updatedPostCategory = [...postCategory]
+        if (event.target.checked) {
+            setPostCategory([...postCategory, event.target.value])
+        } else {
+            updatedPostCategory.splice(postCategory.indexOf(event.target.value), 1)
+            setPostCategory(updatedPostCategory)
+        }
     }
 
     useEffect(() => {
-        if (["science", "education", "sports", "lifehacks"].includes(filterCategory)) {
+        if (categoryList.includes(filterCategory)) {
             navigate(`/${filterCategory}`)
         } else {
             navigate(`/`)
@@ -48,25 +88,13 @@ const Home = () => {
             <nav className="nav-container">
                 <ul className="nav-list">
                     <li>
-                        <Link
-                            to={`/`}
-                        >
-                            Forum
-                        </Link>
+                        <Link to={`/`}>Forum</Link>
                     </li>
                     <li>
-                        <Link
-                            to={`/signup/`}
-                        >
-                            Sign up
-                        </Link>
+                        <Link to={`/signup/`}>Sign up</Link>
                     </li>
                     <li>
-                        <Link
-                            to={`/login/`}
-                        >
-                            Login
-                        </Link>
+                        <Link to={`/login/`}>Login</Link>
                     </li>
                 </ul>
             </nav>
@@ -75,7 +103,7 @@ const Home = () => {
                     {/* <form onSubmit={handleFilterSubmit}> */}
                     <form>
                         <h1>Filter posts</h1>
-                        <select className="filter" value={filterCategory} name="filterCategory" onChange={handleFilterCategoryChange}>
+                        <select className="filter" value={filterCategory} name="filterCategory" onChange={e=>setFilterCategory(e.target.value)}>
                             <option value="all">Show all</option>
                             <option value="science">Science</option>
                             <option value="education">Education</option>
@@ -86,10 +114,27 @@ const Home = () => {
                     </form>
                 </div>
                 <div className="allposts-container">
+                    <div className="post-container">
+                        <h1>Create a new post</h1>
+                        <form onSubmit={handlePostSubmit}>
+                            <p>Title:</p>
+                            <input type="text" name="postTitle" value={postTitle} onChange={e => setPostTitle(e.target.value)} required />
+                            <p>Text:</p>
+                            <textarea type="text" name="postContent" placeholder="Enter text here..." id="postContent" value={postContent} onChange={e => setPostContent(e.target.value)} required></textarea>
+                            <p>At least one category has to be selected</p>
+                            <p>
+                                <input type="checkbox" name="category" value="science" onChange={handleCategoryCheck} />Science
+                                <input type="checkbox" name="category" value="education" onChange={handleCategoryCheck} />Education
+                                <input type="checkbox" name="category" value="sports" onChange={handleCategoryCheck} />Sports
+                                <input type="checkbox" name="category" value="lifehacks" onChange={handleCategoryCheck} />Lifehacks
+                            </p>
+                            <input value="Create a post" type="submit" />
+                        </form>
+                    </div>
                     {posts && posts.map((post) => {
                         if (!filterCategory || filterCategory === "all" || post.CategoryArr.includes(filterCategory)){
                             return (<>
-                                <div className='post-container' key={post.ID} onClick={()=>{handleCardClick(post.ID)}}>
+                                <div className='post-container' key={post.ID} onClick={()=>{handleCardClick(post)}}>
                                     <p className='title-text'>
                                         {post.Title}
                                     </p>

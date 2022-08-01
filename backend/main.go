@@ -76,7 +76,12 @@ func main() {
 	}
 	src.CreateTables(db)
 	testPosts := []src.Post{
-		{Title: "Title1", Content: "Content1", CategoryArr: []string{"science", "education"}, CreatorUsrName: "DummyUser"},
+		{
+			Title:          "Title1",
+			Content:        "Content1",
+			CategoryArr:    []string{"science", "education"},
+			CreatorUsrName: "DummyUser",
+		},
 		{Title: "Title2", Content: "Content2", CategoryArr: []string{"education", "sports"}, CreatorUsrName: "DummyUser"},
 		{Title: "Title3", Content: "Content3", CategoryArr: []string{"sports", "lifehacks"}, CreatorUsrName: "DummyUser"},
 	}
