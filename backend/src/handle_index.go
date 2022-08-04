@@ -13,15 +13,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	// 	w.WriteHeader(404)
 	// 	return
 	// }
-	if r.Method == "POST" {
-		// 変数を定義
-		var post Post
-		// デコードして変数へ値を格納する
-		if err := json.NewDecoder(r.Body).Decode(&post); err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println("Name:", post)
-	}
 	db, err := sql.Open("sqlite3", "./example.db")
 	if err != nil {
 		w.WriteHeader(500)
@@ -29,6 +20,29 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(1)
 	}
 	defer db.Close()
+
+	if r.Method == "POST" && r.URL.Path == "/new-post" {
+		// 変数を定義
+		var post Post
+		// デコードして変数へ値を格納する
+		if err := json.NewDecoder(r.Body).Decode(&post); err != nil {
+			log.Fatal(err)
+		}
+		// fmt.Println("Received post: ", post)
+		InsertPost(db, post)
+	}
+
+	if r.Method == "POST" && r.URL.Path == "/new-comment" {
+		// 変数を定義
+		var comment Comment
+		// デコードして変数へ値を格納する
+		if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Received comment: ", comment)
+		InsertComment(db, comment)
+	}
+
 	posts := ReadPosts(db)
 
 	// cookie, err := r.Cookie("session")

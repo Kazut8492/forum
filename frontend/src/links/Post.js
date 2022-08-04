@@ -1,15 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 
 const Post = () => { 
     const location = useLocation();
     const {post} = location.state
-
-    console.log(post)
+    const [commentTitle, setCommentTitle] = useState('')
+    const [commentContent, setCommentContent] = useState('')
 
     // There are two ways to get a post.
     // One way is using useContext and compare the posdIDs.
     // The other way is passing a selected post as state from Home.
+
+    const handleCommentSubmit = (event) => {
+        event.preventDefault();
+
+        const newComment = {
+            PostId: post.ID,
+            Title: commentTitle,
+            Content: commentContent,
+        }
+
+        fetch("http://localhost:8080/new-comment", {
+            method:"POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type":"application/json",
+            },
+            body: JSON.stringify(newComment)
+        })
+        .then(response=>response.json())
+        .then(data=>console.log(data))
+        .catch(error=>console.log(error))
+    }
 
     return (<>
         <nav className="nav-container">
@@ -47,6 +71,14 @@ const Post = () => {
                             </div>
                         </>)
                     })}
+                    <h1>Create a new comment</h1>
+                    <form onSubmit={handleCommentSubmit}>
+                        <p>Comment title:</p>
+                        <input type="text" name="commentTitle" value={commentTitle} onChange={e=>{setCommentTitle(e.target.value)}} required />
+                        <p>Comment text:</p>
+                        <textarea value={commentContent} onChange={e=>{setCommentContent(e.target.value)}} name="commentDescription" placeholder="Enter text here..." id="commentDescription" required></textarea>
+                        <input type="submit" value="Submit comment" />
+                    </form>
                 </div>
             </div>
         </main>

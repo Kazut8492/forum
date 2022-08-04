@@ -23,6 +23,7 @@ const Home = () => {
         navigate(`/post/?id=${post.ID}`, {state:{post}})
     }
 
+    // Here is posting part.
     const handlePostSubmit = (event) => {
         event.preventDefault();
 
@@ -33,7 +34,7 @@ const Home = () => {
         }
 
         // Post to the server
-        fetch("http://localhost:8080", {
+        fetch("http://localhost:8080/new-post", {
             method:"POST",
             mode: "cors",
             cache: "no-cache",
@@ -45,8 +46,10 @@ const Home = () => {
         })
         .then(response=>response.json())
         .then(data=>{
-            // Why this data gives the list of posts...?
+            // Set returned, updated posts into state
             console.log(data)
+            setPosts(data)
+            // Resetting the form.
             event.target.reset()
             setPostTitle("")
             setPostContent("")
