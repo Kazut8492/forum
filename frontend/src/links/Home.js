@@ -76,10 +76,6 @@ const Home = () => {
         console.log(filterCategory)
     },[filterCategory])
 
-    // useEffect(()=>{
-    //     console.log(category)
-    // }, [category])
-
     const styles = {
         hr : {
             width:"100%"
