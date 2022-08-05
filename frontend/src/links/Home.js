@@ -20,7 +20,7 @@ const Home = () => {
 
     const handleCardClick = (post) => {
         // Padding area is clickable. Margin area is not.
-        navigate(`/post/?id=${post.ID}`, {state:{post}})
+        navigate(`/posts/${post.ID}`, {state:{post}})
     }
 
     // Here is posting part.

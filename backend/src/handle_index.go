@@ -44,15 +44,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	posts := ReadPosts(db)
-
-	// cookie, err := r.Cookie("session")
-
-	// receivedUUID := cookie.Value
-	// matchedUsername := getUsernameFromUUID(w, receivedUUID)
-	// if matchedUsername == "" {
-
-	// }
-
 	js, err := json.Marshal(posts)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

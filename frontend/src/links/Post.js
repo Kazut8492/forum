@@ -1,15 +1,20 @@
-import React, { useState } from "react";
-import { useLocation, Link } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { useLocation, Link, useParams } from "react-router-dom";
+import { PostsContext } from "./PostsContext";
 
 const Post = () => { 
-    const location = useLocation();
-    const {post} = location.state
+    // const location = useLocation();
+    // const {post} = location.state
+    const {posts, setPosts} = useContext(PostsContext)
     const [commentTitle, setCommentTitle] = useState('')
     const [commentContent, setCommentContent] = useState('')
+    const params = useParams();
+    // console.log(params)
 
-    // There are two ways to get a post.
-    // One way is using useContext and compare the posdIDs.
-    // The other way is passing a selected post as state from Home.
+    const thisPostIndex = posts.findIndex((post)=>{
+        return post.ID === parseInt(params.id);
+    })
+    const post = posts[thisPostIndex]
 
     const handleCommentSubmit = (event) => {
         event.preventDefault();
@@ -31,7 +36,14 @@ const Post = () => {
             body: JSON.stringify(newComment)
         })
         .then(response=>response.json())
-        .then(data=>console.log(data))
+        .then(data=>{
+            console.log(data)
+            // Comments are nested inside the posts object.
+            setPosts(data)
+            event.target.reset()
+            setCommentTitle('')
+            setCommentContent('')
+        })
         .catch(error=>console.log(error))
     }
 
