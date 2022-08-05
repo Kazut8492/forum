@@ -60,6 +60,15 @@ const Post = () => {
                     </h2>
                     <p>category: {post.CategoryArr.join().replace(',', ' | ')}</p>
                     <hr />
+                    <h1>Create a new comment</h1>
+                    <form onSubmit={handleCommentSubmit}>
+                        <p>Comment title:</p>
+                        <input type="text" name="commentTitle" value={commentTitle} onChange={e=>{setCommentTitle(e.target.value)}} required />
+                        <p>Comment text:</p>
+                        <textarea value={commentContent} onChange={e=>{setCommentContent(e.target.value)}} name="commentDescription" placeholder="Enter text here..." id="commentDescription" required></textarea>
+                        <input type="submit" value="Submit comment" />
+                    </form>
+                    <hr />
                     {post.Comments && post.Comments.map((comment)=>{
                         return (<>
                             <div className="comment">
@@ -71,14 +80,6 @@ const Post = () => {
                             </div>
                         </>)
                     })}
-                    <h1>Create a new comment</h1>
-                    <form onSubmit={handleCommentSubmit}>
-                        <p>Comment title:</p>
-                        <input type="text" name="commentTitle" value={commentTitle} onChange={e=>{setCommentTitle(e.target.value)}} required />
-                        <p>Comment text:</p>
-                        <textarea value={commentContent} onChange={e=>{setCommentContent(e.target.value)}} name="commentDescription" placeholder="Enter text here..." id="commentDescription" required></textarea>
-                        <input type="submit" value="Submit comment" />
-                    </form>
                 </div>
             </div>
         </main>
