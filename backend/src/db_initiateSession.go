@@ -34,5 +34,4 @@ func InitiateSession(w http.ResponseWriter, r *http.Request, db *sql.DB, user Us
 	}
 	defer statement.Close()
 	statement.Exec(user.Username, uuid)
-	http.SetCookie(w, &cookie)
 }
