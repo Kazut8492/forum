@@ -8,10 +8,14 @@ package src
 // }
 
 type User struct {
-	ID       int
-	Username string
-	Email    string
-	Password string
+	ID        int
+	Username  string
+	Email     string
+	Password  string
+	Age       string
+	Gender    string
+	FirstName string
+	LastName  string
 }
 
 type Comment struct {

@@ -33,6 +33,10 @@ func CreateTables(db *sql.DB) {
 			"username"		TEXT NOT NULL UNIQUE,
 			"user_email"	TEXT NOT NULL UNIQUE,
 			"user_pass"		TEXT NOT NULL,
+			"age"			TEXT NOT NULL,
+			"gender"		TEXT NOT NULL,
+			"firstname"		TEXT NOT NULL,
+			"lastname"		TEXT NOT NULL,
 			PRIMARY KEY("user_id" AUTOINCREMENT)
 		)`,
 

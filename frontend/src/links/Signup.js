@@ -2,7 +2,11 @@ import React, {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-    const [username, setUsername] = useState("")
+    const [nickname, setNickname] = useState("")
+    const [age, setAge] = useState()
+    const [gender, setGender] = useState("")
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const navigate = useNavigate();
@@ -11,9 +15,13 @@ const SignUp = () => {
         event.preventDefault();
 
         const newUser = {
-            Username: username,
+            Username: nickname,
             Email: email,
             Password: password,
+            Age: age,
+            Gender: gender,
+            FirstName: firstName,
+            LastName: lastName,
         }
 
         fetch("http://localhost:8080/new-user", {
@@ -32,7 +40,7 @@ const SignUp = () => {
             // Comments are nested inside the posts object.
             // setPosts(data)
             event.target.reset()
-            setUsername('')
+            setNickname('')
             setEmail('')
             setPassword('')
         })
@@ -62,8 +70,20 @@ const SignUp = () => {
                     <div className="post-container">
                         <h1>Sign up form</h1>
                         <form onSubmit={handleSignupSubmit}>
-                            <p>Username</p>
-                            <input type="text" value={username} onChange={e=>setUsername(e.target.value)} name="username" placeholder="username" required />
+                            <p>Nickname</p>
+                            <input type="text" value={nickname} onChange={e=>setNickname(e.target.value)} name="nickname" placeholder="nickname" required />
+                            <p>Age</p>
+                            <input type="number" value={age} onChange={e=>setAge(e.target.value)} placeholder="age" required />
+                            <p>Gender</p>
+                            <select value={gender} onChange={e=>setGender(e.target.value)} name="gender" id="gender-select" required>
+                                <option value="other">Other</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                            <p>First Name</p>
+                            <input type="text" value={firstName} onChange={e=>setFirstName(e.target.value)} name="firstName" placeholder="first name" required />
+                            <p>Last Name</p>
+                            <input type="text" value={lastName} onChange={e=>setLastName(e.target.value)} name="lastName" placeholder="last name" required />
                             <p>Email</p>
                             <input type="email" value={email} onChange={e=>setEmail(e.target.value)} name="email" placeholder="email" required />
                             <p>Password</p>

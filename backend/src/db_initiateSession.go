@@ -17,11 +17,12 @@ func InitiateSession(w http.ResponseWriter, r *http.Request, db *sql.DB, user Us
 	db.Exec("DELETE FROM session WHERE user_id = ?", user.ID)
 
 	cookie := http.Cookie{
-		Name:    "session",
-		Value:   uuid.String(),
-		Expires: expiration,
-		Secure:  true,
-		Path:    "/",
+		Name:     "session",
+		Value:    uuid.String(),
+		Expires:  expiration,
+		Secure:   true,
+		Path:     "/",
+		SameSite: http.SameSiteNoneMode,
 	}
 	http.SetCookie(w, &cookie)
 
