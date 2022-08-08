@@ -22,9 +22,14 @@ func InitiateSession(w http.ResponseWriter, r *http.Request, db *sql.DB, user Us
 		Expires:  expiration,
 		Secure:   true,
 		Path:     "/",
+		HttpOnly: true,
 		SameSite: http.SameSiteNoneMode,
 	}
 	http.SetCookie(w, &cookie)
+
+	for _, c := range r.Cookies() {
+		fmt.Println("Name:", c.Name, "Value:", c.Value)
+	}
 
 	statement, err := db.Prepare("INSERT INTO session (username ,uuid) VALUES (?, ?)")
 	if err != nil {

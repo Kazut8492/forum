@@ -75,6 +75,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	// Two lines below are important to avoid CORS error.
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "*")
-	w.Header().Set("Content-Type", "application/json")
+	// w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
 }

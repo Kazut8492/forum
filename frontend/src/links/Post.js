@@ -27,9 +27,9 @@ const Post = () => {
 
         fetch("http://localhost:8080/new-comment", {
             method:"POST",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
+            // mode: "cors",
+            // cache: "no-cache",
+            // credentials: "same-origin",
             headers: {
                 "Content-Type":"application/json",
             },

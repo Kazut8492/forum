@@ -8,9 +8,9 @@ const PostsProvider = (props) => {
     useEffect(()=>{
         fetch("http://localhost:8080/", {
             method:"GET",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
+            // mode: "cors",
+            // cache: "no-cache",
+            // credentials: "same-origin",
             headers: {
                 "Content-Type":"application/json",
             },

@@ -26,9 +26,9 @@ const SignUp = () => {
 
         fetch("http://localhost:8080/new-user", {
             method:"POST",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
+            // mode: "cors",
+            // cache: "no-cache",
+            // credentials: "same-origin",
             headers: {
                 "Content-Type":"application/json",
             },
@@ -36,9 +36,6 @@ const SignUp = () => {
         })
         .then(response=>response.json())
         .then(data=>{
-            // console.log(data)
-            // Comments are nested inside the posts object.
-            // setPosts(data)
             event.target.reset()
             setNickname('')
             setEmail('')
@@ -76,7 +73,7 @@ const SignUp = () => {
                             <input type="number" value={age} onChange={e=>setAge(e.target.value)} placeholder="age" required />
                             <p>Gender</p>
                             <select value={gender} onChange={e=>setGender(e.target.value)} name="gender" id="gender-select" required>
-                                <option value="other">Other</option>
+                                <option value="other" select="selected">Other</option>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                             </select>
