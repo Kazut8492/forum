@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { useLocation, Link, useParams } from "react-router-dom";
 import { PostsContext } from "./PostsContext";
 
-const Post = () => { 
+const Post = () => {
     // const location = useLocation();
     // const {post} = location.state
     const {posts, setPosts} = useContext(PostsContext)

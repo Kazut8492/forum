@@ -3,61 +3,87 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"forum-spa/backend/pkg/websocket"
 	"forum-spa/backend/src"
 	"log"
 	"net/http"
 
-	"github.com/gorilla/websocket"
+	// "github.com/gorilla/websocket"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// We'll need to define an Upgrader
-// this will require a Read and Write buffer size
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
+// // We'll need to define an Upgrader
+// // this will require a Read and Write buffer size
+// var upgrader = websocket.Upgrader{
+// 	ReadBufferSize:  1024,
+// 	WriteBufferSize: 1024,
 
-	// We'll need to check the origin of our connection
-	// this will allow us to make requests from our React
-	// development server to here.
-	// For now, we'll do no checking and just allow any connection
-	CheckOrigin: func(r *http.Request) bool { return true },
-}
+// 	// We'll need to check the origin of our connection
+// 	// this will allow us to make requests from our React
+// 	// development server to here.
+// 	// For now, we'll do no checking and just allow any connection
+// 	CheckOrigin: func(r *http.Request) bool { return true },
+// }
 
-// define a reader which will listen for
-// new messages being sent to our WebSocket
-// endpoint
-func reader(conn *websocket.Conn) {
-	for {
-		// read in a message
-		messageType, p, err := conn.ReadMessage()
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		// print out that message for clarity
-		fmt.Println(string(p))
+// // define a reader which will listen for
+// // new messages being sent to our WebSocket
+// // endpoint
+// func reader(conn *websocket.Conn) {
+// 	for {
+// 		// read in a message
+// 		messageType, p, err := conn.ReadMessage()
+// 		if err != nil {
+// 			log.Println(err)
+// 			return
+// 		}
+// 		// print out that message for clarity
+// 		fmt.Println(string(p))
 
-		if err := conn.WriteMessage(messageType, p); err != nil {
-			log.Println(err)
-			return
-		}
+// 		if err := conn.WriteMessage(messageType, p); err != nil {
+// 			log.Println(err)
+// 			return
+// 		}
 
-	}
-}
+// 	}
+// }
 
-// define our WebSocket endpoint
-func serveWs(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.Host)
-	// upgrade this connection to a WebSocket
-	// connection
-	ws, err := upgrader.Upgrade(w, r, nil)
+// // define our WebSocket endpoint
+// func serveWs(w http.ResponseWriter, r *http.Request) {
+// 	fmt.Println(r.Host)
+// 	// upgrade this connection to a WebSocket
+// 	// connection
+// 	ws, err := upgrader.Upgrade(w, r, nil)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
+// 	// listen indefinitely for new messages coming
+// 	// through on our WebSocket connection
+// 	reader(ws)
+// }
+
+func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
+	fmt.Println("WebSocket Endpoint Hit")
+	conn, err := websocket.Upgrade(w, r)
 	if err != nil {
-		log.Println(err)
+		fmt.Fprintf(w, "%+v\n", err)
 	}
-	// listen indefinitely for new messages coming
-	// through on our WebSocket connection
-	reader(ws)
+
+	client := &websocket.Client{
+		Conn: conn,
+		Pool: pool,
+	}
+
+	pool.Register <- client
+	client.Read()
+}
+
+func setupRoutes() {
+	pool := websocket.NewPool()
+	go pool.Start()
+
+	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		serveWs(pool, w, r)
+	})
 }
 
 func main() {
@@ -107,6 +133,6 @@ func main() {
 	fmt.Println("Server is starting")
 	http.HandleFunc("/", src.IndexHandler)
 	// mape our `/ws` endpoint to the `serveWs` function
-	http.HandleFunc("/ws", serveWs)
+	setupRoutes()
 	http.ListenAndServe(":8080", nil)
 }
