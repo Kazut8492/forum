@@ -26,16 +26,17 @@ const SignUp = () => {
 
         fetch("http://localhost:8080/new-user", {
             method:"POST",
-            // mode: "cors",
-            // cache: "no-cache",
-            // credentials: "same-origin",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "include",
             headers: {
                 "Content-Type":"application/json",
             },
             body: JSON.stringify(newUser)
         })
         .then(response=>response.json())
-        .then(data=>{
+        .then((data)=>{
+            console.log(data)
             event.target.reset()
             setNickname('')
             setEmail('')
@@ -43,7 +44,7 @@ const SignUp = () => {
         })
         .catch(error=>console.log(error))
 
-        navigate("/")
+        navigate("/posts/")
     }
 
 
@@ -52,7 +53,7 @@ const SignUp = () => {
             <nav className="nav-container">
                 <ul className="nav-list">
                     <li>
-                        <Link to={`/`}>Forum</Link>
+                        <Link to={`/posts/`}>Forum</Link>
                     </li>
                     <li>
                         <Link to={`/signup/`}>Sign up</Link>

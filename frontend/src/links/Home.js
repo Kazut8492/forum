@@ -34,11 +34,12 @@ const Home = () => {
         }
 
         // Post to the server
+        // It seems credential "include" and Access-Control-Allow-Origin in main.go has to be set at the same time.
         fetch("http://localhost:8080/new-post", {
             method:"POST",
-            // mode: "cors",
-            // cache: "no-cache",
-            // credentials: "same-origin",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "include",
             headers: {
                 "Content-Type":"application/json",
             },
@@ -69,9 +70,9 @@ const Home = () => {
 
     useEffect(() => {
         if (categoryList.includes(filterCategory)) {
-            navigate(`/${filterCategory}`)
+            navigate(`/posts/filter/${filterCategory}`)
         } else {
-            navigate(`/`)
+            navigate(`/posts`)
         }
         console.log(filterCategory)
     },[filterCategory])
@@ -87,7 +88,7 @@ const Home = () => {
             <nav className="nav-container">
                 <ul className="nav-list">
                     <li>
-                        <Link to={`/`}>Forum</Link>
+                        <Link to={`/posts/`}>Forum</Link>
                     </li>
                     <li>
                         <Link to={`/signup/`}>Sign up</Link>

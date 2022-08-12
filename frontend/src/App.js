@@ -13,8 +13,8 @@ const App = () => {
     <BrowserRouter>
       <PostsProvider>
         <Routes>
-          <Route path={`/:category`} element={<Home />} />
-          <Route path={`/`} element={<Home />} />
+          <Route path={`/posts/filter/:category`} element={<Home />} />
+          <Route path={`/posts/`} element={<Home />} />
           <Route path={`/posts/:id`} element={<Post />} />
           <Route path={`/test/`} element={<TestPage />} />
           <Route path={`/signup/`} element={<Signup />} />

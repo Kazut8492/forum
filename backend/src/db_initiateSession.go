@@ -2,41 +2,20 @@ package src
 
 import (
 	"database/sql"
-	"fmt"
-	"log"
-	"net/http"
-	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
-func InitiateSession(w http.ResponseWriter, r *http.Request, db *sql.DB, user User) {
+func InitiateSession(context *gin.Context, db *sql.DB, user User) {
 	uuid := uuid.New()
-	expiration := time.Now()
-	expiration = expiration.AddDate(1, 0, 0)
 	db.Exec("DELETE FROM session WHERE user_id = ?", user.ID)
 
-	cookie := http.Cookie{
-		Name:     "session",
-		Value:    uuid.String(),
-		Expires:  expiration,
-		Secure:   true,
-		Path:     "/",
-		HttpOnly: true,
-		SameSite: http.SameSiteNoneMode,
-	}
-	http.SetCookie(w, &cookie)
-
-	for _, c := range r.Cookies() {
-		fmt.Println("Name:", c.Name, "Value:", c.Value)
-	}
+	context.SetCookie("cookie", user.Username, 3600, "/", "localhost", false, true)
 
 	statement, err := db.Prepare("INSERT INTO session (username ,uuid) VALUES (?, ?)")
 	if err != nil {
-		w.WriteHeader(500)
-		fmt.Println(err.Error())
-		fmt.Println("ERROR: Failed to insert session")
-		log.Fatal(1)
+		return
 	}
 	defer statement.Close()
 	statement.Exec(user.Username, uuid)

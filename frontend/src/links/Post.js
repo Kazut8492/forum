@@ -27,9 +27,9 @@ const Post = () => {
 
         fetch("http://localhost:8080/new-comment", {
             method:"POST",
-            // mode: "cors",
-            // cache: "no-cache",
-            // credentials: "same-origin",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "include",
             headers: {
                 "Content-Type":"application/json",
             },
@@ -37,8 +37,6 @@ const Post = () => {
         })
         .then(response=>response.json())
         .then(data=>{
-            console.log(data)
-            // Comments are nested inside the posts object.
             setPosts(data)
             event.target.reset()
             setCommentTitle('')
@@ -51,7 +49,7 @@ const Post = () => {
         <nav className="nav-container">
             <ul className="nav-list">
                 <li>
-                    <Link to={`/`}>Forum</Link>
+                    <Link to={`/posts/`}>Forum</Link>
                 </li>
                 <li>
                     <Link to={`/signup/`}>Sign up</Link>
