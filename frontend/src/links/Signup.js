@@ -74,7 +74,7 @@ const SignUp = () => {
                             <input type="number" value={age} onChange={e=>setAge(e.target.value)} placeholder="age" required />
                             <p>Gender</p>
                             <select value={gender} onChange={e=>setGender(e.target.value)} name="gender" id="gender-select" required>
-                                <option value="other" select="selected">Other</option>
+                                <option value="x" select="selected">X</option>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                             </select>

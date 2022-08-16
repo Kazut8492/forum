@@ -37,6 +37,7 @@ func setupRoutes() {
 
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
+		// w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		w.Header().Set("Access-Control-Allow-Headers", "*")
 		serveWs(pool, w, r)
 	})
@@ -119,12 +120,12 @@ func main() {
 		context.IndentedJSON(http.StatusOK, posts)
 	}
 
-	PasswordEncrypt := func(password string) (string, error) {
-		hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-		return string(hash), err
-	}
-
 	addUser := func(context *gin.Context) {
+		PasswordEncrypt := func(password string) (string, error) {
+			hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+			return string(hash), err
+		}
+
 		var user src.User
 		if err := context.BindJSON(&user); err != nil {
 			return
@@ -145,6 +146,48 @@ func main() {
 		context.IndentedJSON(http.StatusOK, nil)
 	}
 
+	loginUser := func(context *gin.Context) {
+		var userInfo src.User
+		if err := context.BindJSON(&userInfo); err != nil {
+			return
+		}
+
+		var matchedUsername string
+		db.QueryRow("SELECT username FROM user WHERE username = ?", userInfo.Username).Scan(&matchedUsername)
+		var matchedEmail string
+		db.QueryRow("SELECT user_email FROM user WHERE user_email = ?", userInfo.Email).Scan(&matchedEmail)
+
+		CompareHashAndPassword := func(hash, password string) error {
+			return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+		}
+
+		if !(matchedUsername == "") {
+			matchedUser := src.ReadUser(db, userInfo)
+			if err := CompareHashAndPassword(matchedUser.Password, userInfo.Password); err != nil {
+				context.JSON(401, gin.H{"message": "Wrong Password"})
+				return
+			} else {
+				src.InitiateSession(context, db, matchedUser)
+				context.JSON(200, gin.H{"message": "Login Success"})
+				return
+			}
+		} else if !(matchedEmail == "") {
+			db.QueryRow("SELECT username FROM user WHERE user_email = ?", matchedEmail).Scan(&matchedUsername)
+			userInfo.Username = matchedUsername
+			matchedUser := src.ReadUser(db, userInfo)
+			if err := CompareHashAndPassword(matchedUser.Password, userInfo.Password); err != nil {
+				context.JSON(401, gin.H{"message": "Wrong Password"})
+				return
+			} else {
+				src.InitiateSession(context, db, matchedUser)
+				context.JSON(200, gin.H{"message": "Login Success"})
+				return
+			}
+		} else {
+			context.JSON(401, gin.H{"message": "Wrong username / email"})
+		}
+	}
+
 	getCookie := func(context *gin.Context) {
 		user, user_cookie_err := context.Cookie("cookie")
 		if user_cookie_err != nil {
@@ -158,6 +201,7 @@ func main() {
 	router.POST("/new-post", addPost)
 	router.POST("/new-comment", addComment)
 	router.POST("/new-user", addUser)
+	router.POST("/login", loginUser)
 	router.GET("/get-cookie", getCookie)
 	router.Run("localhost:8080")
 	setupRoutes()
