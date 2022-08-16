@@ -87,6 +87,7 @@ const Post = () => {
                                 <p>CommentID: {comment.ID}</p>
                                 <p>Username: {comment.CreatorUsrName}</p>
                                 {/* add like dislike button */}
+                                <hr />
                             </div>
                         </>)
                     })}
