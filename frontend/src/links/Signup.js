@@ -1,5 +1,7 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
+import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
 
 const SignUp = () => {
     const [nickname, setNickname] = useState("")
@@ -10,6 +12,7 @@ const SignUp = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const navigate = useNavigate();
+    const {cookieExist, setCookieExist} = useContext(CookieContext);
 
     const handleSignupSubmit = (event) => {
         event.preventDefault();
@@ -41,6 +44,7 @@ const SignUp = () => {
             setNickname('')
             setEmail('')
             setPassword('')
+            setCookieExist(doesHttpOnlyCookieExist("cookie"))
         })
         .catch(error=>console.log(error))
 
@@ -50,19 +54,7 @@ const SignUp = () => {
 
     return (
         <>
-            <nav className="nav-container">
-                <ul className="nav-list">
-                    <li>
-                        <Link to={`/posts/`}>Forum</Link>
-                    </li>
-                    <li>
-                        <Link to={`/signup/`}>Sign up</Link>
-                    </li>
-                    <li>
-                        <Link to={`/login/`}>Login</Link>
-                    </li>
-                </ul>
-            </nav>
+            <Navbar />
             <main>
                 <div className="allposts-container">
                     <div className="post-container">

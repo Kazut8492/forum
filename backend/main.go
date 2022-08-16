@@ -185,6 +185,20 @@ func main() {
 			}
 		} else {
 			context.JSON(401, gin.H{"message": "Wrong username / email"})
+			return
+		}
+	}
+
+	logoutUser := func(context *gin.Context) {
+		username, cookie_err := context.Cookie("cookie")
+		if cookie_err != nil {
+			context.JSON(401, gin.H{"message": "Issue on reading cookie"})
+			return
+		} else {
+			db.Exec("DELETE FROM session WHERE username = ?", username)
+			context.SetCookie("cookie", "", -1, "/", "localhost", false, true)
+			context.JSON(200, gin.H{"message": "Logout Success"})
+			return
 		}
 	}
 
@@ -202,6 +216,7 @@ func main() {
 	router.POST("/new-comment", addComment)
 	router.POST("/new-user", addUser)
 	router.POST("/login", loginUser)
+	router.GET("/logout", logoutUser)
 	router.GET("/get-cookie", getCookie)
 	router.Run("localhost:8080")
 	setupRoutes()

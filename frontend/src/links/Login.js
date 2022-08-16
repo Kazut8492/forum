@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from './Navbar';
+import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
 
 const Login = () => {
     const [loginName, setLoginName] = useState("")
     const [loginPassword, setLoginPassword] = useState("")
+    const {cookieExist, setCookieExist} = useContext(CookieContext);
 
     const handleLoginSubmit = (event) => {
         event.preventDefault();
@@ -30,6 +33,7 @@ const Login = () => {
             event.target.reset()
             setLoginName('')
             setLoginPassword('')
+            setCookieExist(doesHttpOnlyCookieExist("cookie"))
         })
         .catch(error=>console.log(error))
         .finally(
@@ -39,19 +43,7 @@ const Login = () => {
 
     return (
         <>
-            <nav className="nav-container">
-                <ul className="nav-list">
-                    <li>
-                        <Link to={`/posts/`}>Forum</Link>
-                    </li>
-                    <li>
-                        <Link to={`/signup/`}>Sign up</Link>
-                    </li>
-                    <li>
-                        <Link to={`/login/`}>Login</Link>
-                    </li>
-                </ul>
-            </nav>
+            <Navbar />
             <main>
                 <div className='allposts-container'>
                     <div className='post-container'>

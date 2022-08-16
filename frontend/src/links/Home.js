@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { connect, sendMsg } from "../api";
 import {PostsContext} from "./PostsContext"
+import Navbar from "./Navbar"
 
 const Home = () => {
     const [filterCategory, setFilterCategory] = useState()
@@ -85,19 +86,7 @@ const Home = () => {
 
     return(
         <>
-            <nav className="nav-container">
-                <ul className="nav-list">
-                    <li>
-                        <Link to={`/posts/`}>Forum</Link>
-                    </li>
-                    <li>
-                        <Link to={`/signup/`}>Sign up</Link>
-                    </li>
-                    <li>
-                        <Link to={`/login/`}>Login</Link>
-                    </li>
-                </ul>
-            </nav>
+            <Navbar />
             <main>
                 <div className="filter-container">
                     {/* <form onSubmit={handleFilterSubmit}> */}
