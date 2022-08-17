@@ -202,6 +202,120 @@ func main() {
 		}
 	}
 
+	addLike := func(context *gin.Context) {
+
+		var likeInfo src.Like
+		if err := context.BindJSON(&likeInfo); err != nil {
+			context.JSON(400, gin.H{"message": "likeInfo cannot be read"})
+			return
+		}
+
+		username, cookie_err := context.Cookie("cookie")
+		if cookie_err != nil {
+			context.JSON(401, gin.H{"message": "Issue on reading cookie"})
+			return
+		} else {
+
+			// If the user already liked it, then erase it.
+			var matchedUsernameLiked string
+			db.QueryRow("SELECT creator_username FROM like WHERE creator_username = ? AND post_id = ? AND comment_id = ?", username, likeInfo.PostId, likeInfo.CommentId).Scan(&matchedUsernameLiked)
+			if matchedUsernameLiked == username {
+				_, err = db.Exec("DELETE FROM like WHERE creator_username = ? AND post_id = ? AND comment_id = ?", username, likeInfo.PostId, likeInfo.CommentId)
+				if err != nil {
+					context.JSON(400, gin.H{"message": "database issue"})
+					return
+				}
+			} else {
+				// Insert like
+				statement, err := db.Prepare(`
+					INSERT INTO like (
+						post_id,
+						creator_username,
+						comment_id
+					) VALUES (?, ?, ?)
+				`)
+				if err != nil {
+					return
+				}
+				defer statement.Close()
+				// number of variables have to be matched with INSERTed variables
+				statement.Exec(likeInfo.PostId, username, likeInfo.CommentId)
+			}
+
+			// If the user already disliked it then erase it
+			var matchedUsernameDisliked string
+			db.QueryRow("SELECT creator_username FROM dislike WHERE creator_username = ? AND post_id = ? AND comment_id = ?", username, likeInfo.PostId, likeInfo.CommentId).Scan(&matchedUsernameDisliked)
+			if matchedUsernameDisliked == username {
+				_, err = db.Exec("DELETE FROM dislike WHERE creator_username = ? AND post_id = ? AND comment_id = ?", username, likeInfo.PostId, likeInfo.CommentId)
+				if err != nil {
+					context.JSON(401, gin.H{"message": "Wrong username / email"})
+					return
+				}
+			}
+
+			// return psots which includes likes and dislikes
+			posts := src.ReadPosts(db)
+			context.IndentedJSON(http.StatusOK, posts)
+		}
+	}
+
+	addDislike := func(context *gin.Context) {
+		var dislikeInfo src.Dislike
+		if err := context.BindJSON(&dislikeInfo); err != nil {
+			context.JSON(400, gin.H{"message": "dislikeInfo cannot be read"})
+			return
+		}
+
+		username, cookie_err := context.Cookie("cookie")
+		if cookie_err != nil {
+			context.JSON(401, gin.H{"message": "Issue on reading cookie"})
+			return
+		} else {
+
+			// If the user already disliked it, then erase it.
+			var matchedUsernameDisliked string
+			db.QueryRow("SELECT creator_username FROM dislike WHERE creator_username = ? AND post_id = ? AND comment_id = ?", username, dislikeInfo.PostId, dislikeInfo.CommentId).Scan(&matchedUsernameDisliked)
+			if matchedUsernameDisliked == username {
+				_, err = db.Exec("DELETE FROM dislike WHERE creator_username = ? AND post_id = ? AND comment_id = ?", username, dislikeInfo.PostId, dislikeInfo.CommentId)
+				if err != nil {
+					context.JSON(401, gin.H{"message": "Wrong username / email"})
+					return
+				}
+			} else {
+				// Insert dislike
+				statement, err := db.Prepare(`
+					INSERT INTO dislike (
+						post_id,
+						creator_username,
+						comment_id
+					) VALUES (?, ?, ?)
+				`)
+				if err != nil {
+					context.JSON(401, gin.H{"message": "Wrong username / email"})
+					return
+				}
+				defer statement.Close()
+				// number of variables have to be matched with INSERTed variables
+				statement.Exec(dislikeInfo.PostId, username, dislikeInfo.CommentId)
+			}
+
+			// If the user already liked it then erase it
+			var matchedUsernameLiked string
+			db.QueryRow("SELECT creator_username FROM like WHERE creator_username = ? AND post_id = ? AND comment_id = ?", username, dislikeInfo.PostId, dislikeInfo.CommentId).Scan(&matchedUsernameLiked)
+			if matchedUsernameLiked == username {
+				_, err = db.Exec("DELETE FROM like WHERE creator_username = ? AND post_id = ? AND comment_id = ?", username, dislikeInfo.PostId, dislikeInfo.CommentId)
+				if err != nil {
+					context.JSON(401, gin.H{"message": "Wrong username / email"})
+					return
+				}
+			}
+
+			// return psots which includes likes and dislikes
+			posts := src.ReadPosts(db)
+			context.IndentedJSON(http.StatusOK, posts)
+		}
+	}
+
 	getCookie := func(context *gin.Context) {
 		user, user_cookie_err := context.Cookie("cookie")
 		if user_cookie_err != nil {
@@ -217,6 +331,8 @@ func main() {
 	router.POST("/new-user", addUser)
 	router.POST("/login", loginUser)
 	router.GET("/logout", logoutUser)
+	router.POST("/like", addLike)
+	router.POST("/dislike", addDislike)
 	router.GET("/get-cookie", getCookie)
 	router.Run("localhost:8080")
 	setupRoutes()

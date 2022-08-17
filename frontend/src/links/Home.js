@@ -1,8 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { connect, sendMsg } from "../api";
-import {PostsContext} from "./PostsContext"
-import Navbar from "./Navbar"
+import { PostsContext } from "./PostsContext";
+import Navbar from "./Navbar";
+import { CookieContext } from './CookieContext';
 
 const Home = () => {
     const [filterCategory, setFilterCategory] = useState()
@@ -10,13 +11,14 @@ const Home = () => {
     const [postContent, setPostContent] = useState("")
     const [postCategory, setPostCategory] = useState([])
     const {posts, setPosts} = useContext(PostsContext)
+    const {cookieExist, setCookieExist} = useContext(CookieContext)
     const navigate = useNavigate();
     const {category} = useParams();
     const categoryList = ["science", "education", "sports", "lifehacks"]
 
     // If user jumped to URL with category param, then set filter category with it.
     if (category && !filterCategory) {
-        setFilterCategory(category)
+        setFilterCategory(category);
     }
 
     const handleCardClick = (post) => {
@@ -49,7 +51,7 @@ const Home = () => {
         .then(response=>response.json())
         .then(data=>{
             // Set returned, updated posts into state
-            console.log(data)
+            // console.log(data)
             setPosts(data)
             // Resetting the form.
             event.target.reset()
@@ -67,6 +69,56 @@ const Home = () => {
             updatedPostCategory.splice(postCategory.indexOf(event.target.value), 1)
             setPostCategory(updatedPostCategory)
         }
+    }
+
+    const handleLikeClick = (event, postID, commentID) => {
+        event.stopPropagation();
+
+        const newLikePost = {
+            PostId: postID,
+            CommentId: commentID,
+        }
+
+        fetch("http://localhost:8080/like", {
+            method:"POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "include",
+            headers: {
+                "Content-Type":"application/json",
+            },
+            body: JSON.stringify(newLikePost)
+        })
+        .then(response=>response.json())
+        .then(data=>{
+            setPosts(data)
+        })
+        .catch(error=>console.log(error))
+    }
+
+    const handleDislikeClick = (event, postID, commentID) => {
+        event.stopPropagation();
+
+        const newDislikePost = {
+            PostId: postID,
+            CommentId: commentID,
+        }
+
+        fetch("http://localhost:8080/dislike", {
+            method:"POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "include",
+            headers: {
+                "Content-Type":"application/json",
+            },
+            body: JSON.stringify(newDislikePost)
+        })
+        .then(response=>response.json())
+        .then(data=>{
+            setPosts(data)
+        })
+        .catch(error=>console.log(error))
     }
 
     useEffect(() => {
@@ -89,7 +141,6 @@ const Home = () => {
             <Navbar />
             <main>
                 <div className="filter-container">
-                    {/* <form onSubmit={handleFilterSubmit}> */}
                     <form>
                         <h1>Filter posts</h1>
                         <select className="filter" value={filterCategory} name="filterCategory" onChange={e=>setFilterCategory(e.target.value)}>
@@ -99,11 +150,10 @@ const Home = () => {
                             <option value="sports">Sports</option>
                             <option value="lifehacks">Lifehacks</option>
                         </select>
-                        {/* <button>Apply filter</button> */}
                     </form>
                 </div>
                 <div className="allposts-container">
-                    <div className="post-container">
+                    {cookieExist && <div className="post-container">
                         <h1>Create a new post</h1>
                         <form onSubmit={handlePostSubmit}>
                             <p>Title:</p>
@@ -119,7 +169,7 @@ const Home = () => {
                             </p>
                             <input value="Create a post" type="submit" />
                         </form>
-                    </div>
+                    </div>}
                     {posts && posts.map((post) => {
                         if (!filterCategory || filterCategory === "all" || post.CategoryArr.includes(filterCategory)){
                             return (<>
@@ -132,7 +182,8 @@ const Home = () => {
                                     })}
                                     <hr style={styles.hr}></hr>
                                     <p className='post-text'>{post.Content}</p>
-                                    {/* need to add detail button and like & dislike button */}
+                                    <button onClick={(event)=>{handleDislikeClick(event, post.ID)}}>{post.Dislikes ? post.Dislikes.length : 0} 👎</button>
+                                    <button onClick={(event)=>{handleLikeClick(event, post.ID)}}>{post.Likes ? post.Likes.length : 0} 👍</button>
                                 </div>
                             </>);
                         }
@@ -143,18 +194,5 @@ const Home = () => {
         </>
     )
 }
-
-// const Home = () => {
-//     connect()
-//     const send = () => {
-//       console.log("hello from Home.js");
-//       sendMsg("hello");
-//     }
-//     return (<>
-//         <div className="App">
-//             <button onClick={send}>Click</button>
-//         </div>
-//     </>)
-// }
 
 export default Home;

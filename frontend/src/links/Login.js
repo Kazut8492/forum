@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
 
@@ -7,6 +7,7 @@ const Login = () => {
     const [loginName, setLoginName] = useState("")
     const [loginPassword, setLoginPassword] = useState("")
     const {cookieExist, setCookieExist} = useContext(CookieContext);
+    const navigate = useNavigate()
 
     const handleLoginSubmit = (event) => {
         event.preventDefault();
@@ -34,11 +35,9 @@ const Login = () => {
             setLoginName('')
             setLoginPassword('')
             setCookieExist(doesHttpOnlyCookieExist("cookie"))
+            navigate("/posts/")
         })
         .catch(error=>console.log(error))
-        .finally(
-            // navigate("/posts/")
-        )
     }
 
     return (
