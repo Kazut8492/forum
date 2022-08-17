@@ -94,42 +94,45 @@ func main() {
 	getPosts := func(context *gin.Context) {
 		posts := src.ReadPosts(db)
 		if err != nil {
+			context.JSON(500, gin.H{"message": "Failed to read posts"})
 			return
 		}
-		context.IndentedJSON(http.StatusOK, posts)
+		context.JSON(http.StatusOK, posts)
 	}
 
 	addPost := func(context *gin.Context) {
 		username, cookie_err := context.Cookie("cookie")
 		if cookie_err != nil {
-			context.JSON(401, gin.H{"message": "Issue on reading cookie"})
+			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
 			return
 		} else {
 			var post src.Post
 			if err := context.BindJSON(&post); err != nil {
+				context.JSON(500, gin.H{"message": "Failed to perse post info"})
 				return
 			}
 			post.CreatorUsrName = username
 			src.InsertPost(db, post)
 			posts := src.ReadPosts(db)
-			context.IndentedJSON(http.StatusOK, posts)
+			context.JSON(http.StatusOK, posts)
 		}
 	}
 
 	addComment := func(context *gin.Context) {
 		username, cookie_err := context.Cookie("cookie")
 		if cookie_err != nil {
-			context.JSON(401, gin.H{"message": "Issue on reading cookie"})
+			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
 			return
 		} else {
 			var comment src.Comment
 			if err := context.BindJSON(&comment); err != nil {
+				context.JSON(500, gin.H{"message": "Failed to perse comment info"})
 				return
 			}
 			comment.CreatorUsrName = username
 			src.InsertComment(db, comment)
 			posts := src.ReadPosts(db)
-			context.IndentedJSON(http.StatusOK, posts)
+			context.JSON(http.StatusOK, posts)
 		}
 	}
 
@@ -141,6 +144,7 @@ func main() {
 
 		var user src.User
 		if err := context.BindJSON(&user); err != nil {
+			context.JSON(500, gin.H{"message": "Failed to perse user info"})
 			return
 		}
 
@@ -150,29 +154,31 @@ func main() {
 		db.QueryRow("SELECT username FROM user WHERE username = ?", user.Username).Scan(&matchedUsername)
 		if user.Email == matchedEmail || user.Username == matchedUsername {
 			if user.Username == matchedUsername {
-				context.JSON(403, gin.H{"message": "Nickname already taken"})
+				context.JSON(500, gin.H{"message": "Nickname already taken"})
 				return
 			}
 			if user.Email == matchedEmail {
-				context.JSON(403, gin.H{"message": "Email already taken"})
+				context.JSON(500, gin.H{"message": "Email already taken"})
 				return
 			}
 		} else {
 			encryptedPass, err := PasswordEncrypt(user.Password)
 			user.Password = encryptedPass
 			if err != nil {
+				context.JSON(500, gin.H{"message": "Failed to encrypt password"})
 				return
 			}
 			src.InsertUser(db, user)
 			db_user := src.ReadUser(db, user)
 			src.InitiateSession(context, db, db_user)
-			context.JSON(http.StatusOK, gin.H{"message": "Registration successed"})
+			context.JSON(http.StatusOK, gin.H{"message": "Registration succeeded"})
 		}
 	}
 
 	loginUser := func(context *gin.Context) {
 		var userInfo src.User
 		if err := context.BindJSON(&userInfo); err != nil {
+			context.JSON(500, gin.H{"message": "Failed to perse login user info"})
 			return
 		}
 
@@ -188,11 +194,11 @@ func main() {
 		if !(matchedUsername == "") {
 			matchedUser := src.ReadUser(db, userInfo)
 			if err := CompareHashAndPassword(matchedUser.Password, userInfo.Password); err != nil {
-				context.JSON(401, gin.H{"message": "Wrong password"})
+				context.JSON(500, gin.H{"message": "Wrong password"})
 				return
 			} else {
 				src.InitiateSession(context, db, matchedUser)
-				context.JSON(200, gin.H{"message": "Login Success"})
+				context.JSON(200, gin.H{"message": "Login succeeded"})
 				return
 			}
 		} else if !(matchedEmail == "") {
@@ -200,15 +206,15 @@ func main() {
 			userInfo.Username = matchedUsername
 			matchedUser := src.ReadUser(db, userInfo)
 			if err := CompareHashAndPassword(matchedUser.Password, userInfo.Password); err != nil {
-				context.JSON(401, gin.H{"message": "Wrong password"})
+				context.JSON(500, gin.H{"message": "Wrong password"})
 				return
 			} else {
 				src.InitiateSession(context, db, matchedUser)
-				context.JSON(200, gin.H{"message": "Login Success"})
+				context.JSON(200, gin.H{"message": "Login succeeded"})
 				return
 			}
 		} else {
-			context.JSON(401, gin.H{"message": "Wrong username / email"})
+			context.JSON(500, gin.H{"message": "Wrong username / email"})
 			return
 		}
 	}
@@ -216,12 +222,12 @@ func main() {
 	logoutUser := func(context *gin.Context) {
 		username, cookie_err := context.Cookie("cookie")
 		if cookie_err != nil {
-			context.JSON(401, gin.H{"message": "Issue on reading cookie"})
+			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
 			return
 		} else {
 			db.Exec("DELETE FROM session WHERE username = ?", username)
 			context.SetCookie("cookie", "", -1, "/", "localhost", false, true)
-			context.JSON(200, gin.H{"message": "Logout Success"})
+			context.JSON(200, gin.H{"message": "Logout succeeded"})
 			return
 		}
 	}
@@ -230,13 +236,13 @@ func main() {
 
 		var likeInfo src.Like
 		if err := context.BindJSON(&likeInfo); err != nil {
-			context.JSON(400, gin.H{"message": "likeInfo cannot be read"})
+			context.JSON(500, gin.H{"message": "likeInfo cannot be read"})
 			return
 		}
 
 		username, cookie_err := context.Cookie("cookie")
 		if cookie_err != nil {
-			context.JSON(401, gin.H{"message": "Issue on reading cookie"})
+			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
 			return
 		} else {
 
@@ -246,7 +252,7 @@ func main() {
 			if matchedUsernameLiked == username {
 				_, err = db.Exec("DELETE FROM like WHERE creator_username = ? AND post_id = ? AND comment_id = ?", username, likeInfo.PostId, likeInfo.CommentId)
 				if err != nil {
-					context.JSON(400, gin.H{"message": "database issue"})
+					context.JSON(500, gin.H{"message": "database issue"})
 					return
 				}
 			} else {
@@ -259,6 +265,7 @@ func main() {
 					) VALUES (?, ?, ?)
 				`)
 				if err != nil {
+					context.JSON(500, gin.H{"message": "database issue"})
 					return
 				}
 				defer statement.Close()
@@ -272,27 +279,27 @@ func main() {
 			if matchedUsernameDisliked == username {
 				_, err = db.Exec("DELETE FROM dislike WHERE creator_username = ? AND post_id = ? AND comment_id = ?", username, likeInfo.PostId, likeInfo.CommentId)
 				if err != nil {
-					context.JSON(401, gin.H{"message": "Wrong username / email"})
+					context.JSON(500, gin.H{"message": "database issue"})
 					return
 				}
 			}
 
 			// return psots which includes likes and dislikes
 			posts := src.ReadPosts(db)
-			context.IndentedJSON(http.StatusOK, posts)
+			context.JSON(http.StatusOK, posts)
 		}
 	}
 
 	addDislike := func(context *gin.Context) {
 		var dislikeInfo src.Dislike
 		if err := context.BindJSON(&dislikeInfo); err != nil {
-			context.JSON(400, gin.H{"message": "dislikeInfo cannot be read"})
+			context.JSON(500, gin.H{"message": "dislikeInfo cannot be read"})
 			return
 		}
 
 		username, cookie_err := context.Cookie("cookie")
 		if cookie_err != nil {
-			context.JSON(401, gin.H{"message": "Issue on reading cookie"})
+			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
 			return
 		} else {
 
@@ -302,7 +309,7 @@ func main() {
 			if matchedUsernameDisliked == username {
 				_, err = db.Exec("DELETE FROM dislike WHERE creator_username = ? AND post_id = ? AND comment_id = ?", username, dislikeInfo.PostId, dislikeInfo.CommentId)
 				if err != nil {
-					context.JSON(401, gin.H{"message": "Wrong username / email"})
+					context.JSON(500, gin.H{"message": "database issue"})
 					return
 				}
 			} else {
@@ -315,7 +322,7 @@ func main() {
 					) VALUES (?, ?, ?)
 				`)
 				if err != nil {
-					context.JSON(401, gin.H{"message": "Wrong username / email"})
+					context.JSON(500, gin.H{"message": "database issue"})
 					return
 				}
 				defer statement.Close()
@@ -329,23 +336,15 @@ func main() {
 			if matchedUsernameLiked == username {
 				_, err = db.Exec("DELETE FROM like WHERE creator_username = ? AND post_id = ? AND comment_id = ?", username, dislikeInfo.PostId, dislikeInfo.CommentId)
 				if err != nil {
-					context.JSON(401, gin.H{"message": "Wrong username / email"})
+					context.JSON(500, gin.H{"message": "database issue"})
 					return
 				}
 			}
 
 			// return psots which includes likes and dislikes
 			posts := src.ReadPosts(db)
-			context.IndentedJSON(http.StatusOK, posts)
+			context.JSON(http.StatusOK, posts)
 		}
-	}
-
-	getCookie := func(context *gin.Context) {
-		user, user_cookie_err := context.Cookie("cookie")
-		if user_cookie_err != nil {
-			user = "Guest"
-		}
-		context.JSON(200, gin.H{"message": "Hello " + user})
 	}
 
 	router.Use(CORSMiddleware())
@@ -357,7 +356,6 @@ func main() {
 	router.GET("/logout", logoutUser)
 	router.POST("/like", addLike)
 	router.POST("/dislike", addDislike)
-	router.GET("/get-cookie", getCookie)
 	router.Run("localhost:8080")
 	setupRoutes()
 }
