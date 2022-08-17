@@ -5,8 +5,8 @@ import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
 
 const SignUp = () => {
     const [nickname, setNickname] = useState("")
-    const [age, setAge] = useState()
-    const [gender, setGender] = useState("")
+    const [age, setAge] = useState("")
+    const [gender, setGender] = useState("x")
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [email, setEmail] = useState("")
@@ -81,7 +81,7 @@ const SignUp = () => {
                             <input type="number" value={age} onChange={e=>setAge(e.target.value)} placeholder="age" required />
                             <p>Gender</p>
                             <select value={gender} onChange={e=>setGender(e.target.value)} name="gender" id="gender-select" required>
-                                <option value="x" select="selected">X</option>
+                                <option value="x">X</option>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                             </select>
