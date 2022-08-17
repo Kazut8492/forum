@@ -177,7 +177,7 @@ func main() {
 		if !(matchedUsername == "") {
 			matchedUser := src.ReadUser(db, userInfo)
 			if err := CompareHashAndPassword(matchedUser.Password, userInfo.Password); err != nil {
-				context.JSON(401, gin.H{"message": "Wrong Password"})
+				context.JSON(401, gin.H{"message": "Wrong password"})
 				return
 			} else {
 				src.InitiateSession(context, db, matchedUser)
@@ -189,7 +189,7 @@ func main() {
 			userInfo.Username = matchedUsername
 			matchedUser := src.ReadUser(db, userInfo)
 			if err := CompareHashAndPassword(matchedUser.Password, userInfo.Password); err != nil {
-				context.JSON(401, gin.H{"message": "Wrong Password"})
+				context.JSON(401, gin.H{"message": "Wrong password"})
 				return
 			} else {
 				src.InitiateSession(context, db, matchedUser)

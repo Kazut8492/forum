@@ -6,6 +6,8 @@ import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
 const Login = () => {
     const [loginName, setLoginName] = useState("")
     const [loginPassword, setLoginPassword] = useState("")
+    const [warningUsername, setWarningUsername] = useState("")
+    const [warningPassword, setWarningPassword] = useState("")
     const {cookieExist, setCookieExist} = useContext(CookieContext);
     const navigate = useNavigate()
 
@@ -35,7 +37,20 @@ const Login = () => {
             setLoginName('')
             setLoginPassword('')
             setCookieExist(doesHttpOnlyCookieExist("cookie"))
-            navigate("/posts/")
+            if (data["message"] === "Wrong username / email") {
+                setWarningUsername(data["message"])
+                setWarningPassword("")
+                navigate("/login/")
+            } else if (data["message"] === "Wrong password") {
+                setWarningPassword(data["message"])
+                setWarningUsername("")
+                navigate("/login/")
+            } else {
+                setWarningUsername("")
+                setWarningPassword("")
+                navigate("/posts/")
+                console.log(data["message"])
+            }
         })
         .catch(error=>console.log(error))
     }
@@ -50,8 +65,10 @@ const Login = () => {
                         <form onSubmit={handleLoginSubmit}>
                             <p>Nickname / Email</p>
                             <input type="text" value={loginName} onChange={e=>setLoginName(e.target.value)} placeholder="nickname / email" required />
+                            {warningUsername && <h6>{warningUsername}</h6>}
                             <p>Password</p>
                             <input type="password" value={loginPassword} onChange={e=>setLoginPassword(e.target.value)} placeholder="password" required />
+                            {warningPassword && <h6>{warningPassword}</h6>}
                             <hr style={{visibility: "hidden"}} />
                             <button>Log in</button>
                         </form>
