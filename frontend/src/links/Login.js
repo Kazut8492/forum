@@ -37,19 +37,19 @@ const Login = () => {
             setLoginName('')
             setLoginPassword('')
             setCookieExist(doesHttpOnlyCookieExist("cookie"))
+            
             if (data["message"] === "Wrong username / email") {
                 setWarningUsername(data["message"])
                 setWarningPassword("")
                 navigate("/login/")
             } else if (data["message"] === "Wrong password") {
-                setWarningPassword(data["message"])
                 setWarningUsername("")
+                setWarningPassword(data["message"])
                 navigate("/login/")
             } else {
                 setWarningUsername("")
                 setWarningPassword("")
                 navigate("/posts/")
-                console.log(data["message"])
             }
         })
         .catch(error=>console.log(error))

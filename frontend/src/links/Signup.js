@@ -11,6 +11,8 @@ const SignUp = () => {
     const [lastName, setLastName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [warningUsernameTaken, setWarningUsernameTaken] = useState("")
+    const [warningEmailTaken, setWarningEmailTaken] = useState("")
     const navigate = useNavigate();
     const {cookieExist, setCookieExist} = useContext(CookieContext);
 
@@ -45,10 +47,22 @@ const SignUp = () => {
             setEmail('')
             setPassword('')
             setCookieExist(doesHttpOnlyCookieExist("cookie"))
+
+            if (data["message"] === "Nickname already taken") {
+                setWarningUsernameTaken(data["message"])
+                setWarningEmailTaken("")
+                navigate("/signup/")
+            } else if (data["message"] === "Email already taken") {
+                setWarningUsernameTaken("")
+                setWarningEmailTaken(data["message"])
+                navigate("/signup/")
+            } else {
+                setWarningUsernameTaken("")
+                setWarningEmailTaken("")
+                navigate("/posts/")
+            }
         })
         .catch(error=>console.log(error))
-
-        navigate("/posts/")
     }
 
 
@@ -62,6 +76,7 @@ const SignUp = () => {
                         <form onSubmit={handleSignupSubmit}>
                             <p>Nickname</p>
                             <input type="text" value={nickname} onChange={e=>setNickname(e.target.value)} name="nickname" placeholder="nickname" required />
+                            {warningUsernameTaken && <h6>{warningUsernameTaken}</h6>}
                             <p>Age</p>
                             <input type="number" value={age} onChange={e=>setAge(e.target.value)} placeholder="age" required />
                             <p>Gender</p>
@@ -76,6 +91,7 @@ const SignUp = () => {
                             <input type="text" value={lastName} onChange={e=>setLastName(e.target.value)} name="lastName" placeholder="last name" required />
                             <p>Email</p>
                             <input type="email" value={email} onChange={e=>setEmail(e.target.value)} name="email" placeholder="email" required />
+                            {warningEmailTaken && <h6>{warningEmailTaken}</h6>}
                             <p>Password</p>
                             <input type="password" value={password} onChange={e=>setPassword(e.target.value)} name="password" placeholder="password" required />
                             <hr style={{visibility: "hidden"}} />

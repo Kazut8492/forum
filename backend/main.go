@@ -143,20 +143,31 @@ func main() {
 		if err := context.BindJSON(&user); err != nil {
 			return
 		}
-		encryptedPass, err := PasswordEncrypt(user.Password)
-		user.Password = encryptedPass
-		if err != nil {
-			return
+
+		var matchedEmail string
+		var matchedUsername string
+		db.QueryRow("SELECT user_email FROM user WHERE user_email = ?", user.Email).Scan(&matchedEmail)
+		db.QueryRow("SELECT username FROM user WHERE username = ?", user.Username).Scan(&matchedUsername)
+		if user.Email == matchedEmail || user.Username == matchedUsername {
+			if user.Username == matchedUsername {
+				context.JSON(403, gin.H{"message": "Nickname already taken"})
+				return
+			}
+			if user.Email == matchedEmail {
+				context.JSON(403, gin.H{"message": "Email already taken"})
+				return
+			}
+		} else {
+			encryptedPass, err := PasswordEncrypt(user.Password)
+			user.Password = encryptedPass
+			if err != nil {
+				return
+			}
+			src.InsertUser(db, user)
+			db_user := src.ReadUser(db, user)
+			src.InitiateSession(context, db, db_user)
+			context.JSON(http.StatusOK, gin.H{"message": "Registration successed"})
 		}
-		src.InsertUser(db, user)
-		// use user data returned from database, since user above missing user_id
-		db_user := src.ReadUser(db, user)
-		src.InitiateSession(context, db, db_user)
-		// // This time, we store the session in sql instead??
-		// store := cookie.NewStore([]byte("secret"))
-		// store.Options(sessions.Options{MaxAge: 60 * 60 * 24})
-		// router.Use(sessions.Sessions("mysession", store))
-		context.IndentedJSON(http.StatusOK, nil)
 	}
 
 	loginUser := func(context *gin.Context) {
