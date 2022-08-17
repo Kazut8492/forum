@@ -100,24 +100,37 @@ func main() {
 	}
 
 	addPost := func(context *gin.Context) {
-		var post src.Post
-		if err := context.BindJSON(&post); err != nil {
+		username, cookie_err := context.Cookie("cookie")
+		if cookie_err != nil {
+			context.JSON(401, gin.H{"message": "Issue on reading cookie"})
 			return
+		} else {
+			var post src.Post
+			if err := context.BindJSON(&post); err != nil {
+				return
+			}
+			post.CreatorUsrName = username
+			src.InsertPost(db, post)
+			posts := src.ReadPosts(db)
+			context.IndentedJSON(http.StatusOK, posts)
 		}
-		src.InsertPost(db, post)
-		posts := src.ReadPosts(db)
-		context.IndentedJSON(http.StatusOK, posts)
 	}
 
 	addComment := func(context *gin.Context) {
-		var comment src.Comment
-		if err := context.BindJSON(&comment); err != nil {
+		username, cookie_err := context.Cookie("cookie")
+		if cookie_err != nil {
+			context.JSON(401, gin.H{"message": "Issue on reading cookie"})
 			return
+		} else {
+			var comment src.Comment
+			if err := context.BindJSON(&comment); err != nil {
+				return
+			}
+			comment.CreatorUsrName = username
+			src.InsertComment(db, comment)
+			posts := src.ReadPosts(db)
+			context.IndentedJSON(http.StatusOK, posts)
 		}
-		src.InsertComment(db, comment)
-		// comments are included in posts, so just need to return posts and extract in frontend
-		posts := src.ReadPosts(db)
-		context.IndentedJSON(http.StatusOK, posts)
 	}
 
 	addUser := func(context *gin.Context) {
