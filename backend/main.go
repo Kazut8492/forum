@@ -3,7 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"forum-spa/backend/pkg/websocket"
+
+	// "forum-spa/backend/pkg/websocket"
 	"forum-spa/backend/src"
 	"log"
 	"net/http"
@@ -14,34 +15,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
 )
-
-func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
-	fmt.Println("WebSocket Endpoint Hit")
-	conn, err := websocket.Upgrade(w, r)
-	if err != nil {
-		fmt.Fprintf(w, "%+v\n", err)
-	}
-
-	client := &websocket.Client{
-		Conn: conn,
-		Pool: pool,
-	}
-
-	pool.Register <- client
-	client.Read()
-}
-
-func setupRoutes() {
-	pool := websocket.NewPool()
-	go pool.Start()
-
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		// w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-		w.Header().Set("Access-Control-Allow-Headers", "*")
-		serveWs(pool, w, r)
-	})
-}
 
 func main() {
 
@@ -346,7 +319,6 @@ func main() {
 			context.JSON(http.StatusOK, posts)
 		}
 	}
-
 	router.Use(CORSMiddleware())
 	router.GET("/posts", getPosts)
 	router.POST("/new-post", addPost)
@@ -357,7 +329,6 @@ func main() {
 	router.POST("/like", addLike)
 	router.POST("/dislike", addDislike)
 	router.Run("localhost:8080")
-	setupRoutes()
 }
 
 func CORSMiddleware() gin.HandlerFunc {
