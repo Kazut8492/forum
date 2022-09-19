@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { connect, sendMsg } from "../api";
 import { PostsContext } from "./PostsContext";
 import Navbar from "./Navbar";
 import { CookieContext } from './CookieContext';
