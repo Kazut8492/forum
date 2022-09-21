@@ -53,3 +53,9 @@ type Dislike struct {
 	CommentId      int
 	CreatorUsrName string
 }
+
+type ChatHistory struct {
+	ID             int
+	CreatorUsrName string
+	Content        string
+}

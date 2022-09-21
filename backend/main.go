@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	// "forum-spa/backend/pkg/websocket"
+	"forum-spa/backend/pkg/websocket"
 	"forum-spa/backend/src"
 	"log"
 	"net/http"
@@ -319,7 +319,46 @@ func main() {
 			context.JSON(http.StatusOK, posts)
 		}
 	}
+
+	getChatHistory := func(context *gin.Context) {
+		// username, cookie_err := context.Cookie("cookie")
+		_, cookie_err := context.Cookie("cookie")
+		if cookie_err != nil {
+			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
+			return
+		} else {
+			// return chat history
+			chatHistory := src.ReadChatHistory(db)
+			context.JSON(http.StatusOK, chatHistory)
+		}
+	}
+
+	addChat := func(context *gin.Context) {
+		username, cookie_err := context.Cookie("cookie")
+		if cookie_err != nil {
+			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
+			return
+		} else {
+			var chatInfo src.ChatHistory
+			if err := context.BindJSON(&chatInfo); err != nil {
+				context.JSON(500, gin.H{"message": "Failed to perse chat info"})
+				return
+			}
+			chatInfo.CreatorUsrName = username
+			fmt.Println(chatInfo)
+			src.InsertChat(db, chatInfo)
+			chatHistory := src.ReadChatHistory(db)
+			fmt.Println(chatHistory)
+			context.JSON(http.StatusOK, chatHistory)
+		}
+	}
+
 	router.Use(CORSMiddleware())
+	pool := websocket.NewPool()
+	go pool.Start()
+	router.GET("/", func(c *gin.Context) {
+		serveWs(pool, c.Writer, c.Request)
+	})
 	router.GET("/posts", getPosts)
 	router.POST("/new-post", addPost)
 	router.POST("/new-comment", addComment)
@@ -328,8 +367,37 @@ func main() {
 	router.GET("/logout", logoutUser)
 	router.POST("/like", addLike)
 	router.POST("/dislike", addDislike)
+	router.GET("/chatHistory", getChatHistory)
+	router.POST("/new-chat", addChat)
 	router.Run("localhost:8080")
 }
+
+func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
+	fmt.Println("WebSocket Endpoint Hit")
+	conn, err := websocket.Upgrade(w, r)
+	if err != nil {
+		fmt.Fprintf(w, "%+v\n", err)
+	}
+
+	client := &websocket.Client{
+		Conn: conn,
+		Pool: pool,
+	}
+
+	pool.Register <- client
+	client.Read()
+}
+
+// func setupRoutes() {
+// 	pool := websocket.NewPool()
+// 	go pool.Start()
+
+// 	http.Handle("/", http.FileServer(http.Dir("./frontend/public")))
+// 	http.Handle("/src/", http.StripPrefix("/src/", http.FileServer(http.Dir("src"))))
+// 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+// 		serveWs(pool, w, r)
+// 	})
+// }
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {

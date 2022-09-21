@@ -71,6 +71,14 @@ func CreateTables(db *sql.DB) {
 			FOREIGN KEY("comment_id") REFERENCES "COMMENT"("comment_id")
 		)`,
 
+		`CREATE TABLE IF NOT EXISTS chat_history (
+			"chat_id"			INTEGER NOT NULL UNIQUE,
+			"content"			TEXT NOT NULL,
+			"creator_username"	TEXT NOT NULL,
+			PRIMARY KEY("chat_id" AUTOINCREMENT),
+			FOREIGN KEY("creator_username") REFERENCES "USER"("username")
+		)`,
+
 		// `CREATE TABLE IF NOT EXISTS warning (
 		// 	"warning_id"		INTEGER NOT NULL UNIQUE,
 		// 	"warning_type"		TEXT NOT NULL UNIQUE,
