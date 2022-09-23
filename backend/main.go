@@ -319,18 +319,13 @@ func main() {
 
 	getChatHistory := func(context *gin.Context) {
 		// username, cookie_err := context.Cookie("cookie")
-		fmt.Println("STAGE1")
 		_, cookie_err := context.Cookie("cookie")
-		fmt.Println("STAGE2")
 		if cookie_err != nil {
-			fmt.Println("STAGE3")
 			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
 			return
 		} else {
-			fmt.Println("STAGE4")
 			chatHistory := src.ReadChatHistory(db)
 			context.JSON(http.StatusOK, chatHistory)
-			fmt.Println("STAGE5")
 		}
 	}
 

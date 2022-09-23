@@ -31,7 +31,7 @@ const Chat = () => {
 
     useEffect(() => {        
         connect((msg) => {
-            setChatHistory({messages: [...chatHistory.messages, msg.data]});
+            setChatHistory({messages: [...chatHistory.messages, JSON.parse(msg.data)]});
         });
     });
 

@@ -2,7 +2,6 @@ package src
 
 import (
 	"database/sql"
-	"fmt"
 )
 
 func ReadChatHistory(db *sql.DB) []Message {
@@ -23,15 +22,11 @@ func ReadChatHistory(db *sql.DB) []Message {
 
 	for chatRows.Next() {
 		chatHistory := Message{}
-		fmt.Println("TEST7")
-		err = chatRows.Scan(&chatHistory.Type, &chatHistory.Body)
-		fmt.Println("TEST8")
+		err = chatRows.Scan(&chatHistory.ID, &chatHistory.Type, &chatHistory.Body, &chatHistory.CreatorUsrName)
 		if err != nil {
 			panic(err.Error())
 		}
-		fmt.Println("TEST9")
 		result = append(result, chatHistory)
-		fmt.Println("TEST10")
 
 		// err := statement.Scan(&chatHistory.ID, &chatHistory.Content, &chatHistory.CreatorUsrName)
 		// if err != nil {

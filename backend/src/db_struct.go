@@ -70,8 +70,10 @@ type Client struct {
 }
 
 type Message struct {
-	Type int    `json:"type"`
-	Body string `json:"body"`
+	ID             int
+	Type           int    `json:"type"`
+	Body           string `json:"body"`
+	CreatorUsrName string
 }
 
 // type ChatHistory struct {

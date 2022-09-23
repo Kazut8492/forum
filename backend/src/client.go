@@ -34,6 +34,7 @@ func (c *Client) Read() {
 		var chatInfo Message
 		chatInfo.Type = message.Type
 		chatInfo.Body = message.Body
+		chatInfo.CreatorUsrName = "dummy_user"
 		fmt.Println(chatInfo)
 		InsertChat(db, chatInfo)
 	}
