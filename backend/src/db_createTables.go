@@ -73,8 +73,9 @@ func CreateTables(db *sql.DB) {
 
 		`CREATE TABLE IF NOT EXISTS chat_history (
 			"chat_id"			INTEGER NOT NULL UNIQUE,
-			"content"			TEXT NOT NULL,
-			"creator_username"	TEXT NOT NULL,
+			"type"				INTEGER,
+			"body"				TEXT NOT NULL,
+			"creator_username"	TEXT,
 			PRIMARY KEY("chat_id" AUTOINCREMENT),
 			FOREIGN KEY("creator_username") REFERENCES "USER"("username")
 		)`,

@@ -1,5 +1,7 @@
 package src
 
+import "github.com/gorilla/websocket"
+
 // type Session struct {
 // 	userId     int
 // 	username   string
@@ -54,8 +56,26 @@ type Dislike struct {
 	CreatorUsrName string
 }
 
-type ChatHistory struct {
-	ID             int
-	CreatorUsrName string
-	Content        string
+type Pool struct {
+	Register   chan *Client
+	Unregister chan *Client
+	Clients    map[*Client]bool
+	Broadcast  chan Message
 }
+
+type Client struct {
+	ID   string
+	Conn *websocket.Conn
+	Pool *Pool
+}
+
+type Message struct {
+	Type int    `json:"type"`
+	Body string `json:"body"`
+}
+
+// type ChatHistory struct {
+// 	ID             int
+// 	CreatorUsrName string
+// 	Content        string
+// }

@@ -4,12 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 
-	"forum-spa/backend/pkg/websocket"
 	"forum-spa/backend/src"
 	"log"
 	"net/http"
-
-	// "github.com/gorilla/websocket"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
@@ -322,41 +319,25 @@ func main() {
 
 	getChatHistory := func(context *gin.Context) {
 		// username, cookie_err := context.Cookie("cookie")
+		fmt.Println("STAGE1")
 		_, cookie_err := context.Cookie("cookie")
+		fmt.Println("STAGE2")
 		if cookie_err != nil {
+			fmt.Println("STAGE3")
 			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
 			return
 		} else {
-			// return chat history
+			fmt.Println("STAGE4")
 			chatHistory := src.ReadChatHistory(db)
 			context.JSON(http.StatusOK, chatHistory)
-		}
-	}
-
-	addChat := func(context *gin.Context) {
-		username, cookie_err := context.Cookie("cookie")
-		if cookie_err != nil {
-			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
-			return
-		} else {
-			var chatInfo src.ChatHistory
-			if err := context.BindJSON(&chatInfo); err != nil {
-				context.JSON(500, gin.H{"message": "Failed to perse chat info"})
-				return
-			}
-			chatInfo.CreatorUsrName = username
-			fmt.Println(chatInfo)
-			src.InsertChat(db, chatInfo)
-			chatHistory := src.ReadChatHistory(db)
-			fmt.Println(chatHistory)
-			context.JSON(http.StatusOK, chatHistory)
+			fmt.Println("STAGE5")
 		}
 	}
 
 	router.Use(CORSMiddleware())
-	pool := websocket.NewPool()
+	pool := src.NewPool()
 	go pool.Start()
-	router.GET("/", func(c *gin.Context) {
+	router.GET("/ws", func(c *gin.Context) {
 		serveWs(pool, c.Writer, c.Request)
 	})
 	router.GET("/posts", getPosts)
@@ -368,18 +349,17 @@ func main() {
 	router.POST("/like", addLike)
 	router.POST("/dislike", addDislike)
 	router.GET("/chatHistory", getChatHistory)
-	router.POST("/new-chat", addChat)
 	router.Run("localhost:8080")
 }
 
-func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
-	fmt.Println("WebSocket Endpoint Hit")
-	conn, err := websocket.Upgrade(w, r)
+func serveWs(pool *src.Pool, w http.ResponseWriter, r *http.Request) {
+	fmt.Println("src Endpoint Hit")
+	conn, err := src.Upgrade(w, r)
 	if err != nil {
 		fmt.Fprintf(w, "%+v\n", err)
 	}
 
-	client := &websocket.Client{
+	client := &src.Client{
 		Conn: conn,
 		Pool: pool,
 	}

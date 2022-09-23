@@ -5,7 +5,7 @@ const ChatHistory = (props) => {
     return (
         <div className="chat-history">
             <h2>Chat History</h2>
-            {messages.map((message, index) => {
+            {messages && messages.map((message, index) => {
                 return (
                     <div key={index}>
                         <p>{message}</p>

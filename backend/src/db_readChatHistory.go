@@ -2,9 +2,10 @@ package src
 
 import (
 	"database/sql"
+	"fmt"
 )
 
-func ReadChatHistory(db *sql.DB) []ChatHistory {
+func ReadChatHistory(db *sql.DB) []Message {
 	// statement, _ := db.Query("SELECT * FROM user WHERE username = ?", loginUser.Username)
 	// statement, _ := db.Query("SELECT * FROM chat_history")
 	// defer statement.Close()
@@ -18,16 +19,19 @@ func ReadChatHistory(db *sql.DB) []ChatHistory {
 	}
 	defer chatRows.Close()
 
-	var result []ChatHistory
+	var result []Message
 
 	for chatRows.Next() {
-		chatHistory := ChatHistory{}
-		err = chatRows.Scan(&chatHistory.ID, &chatHistory.Content, &chatHistory.CreatorUsrName)
+		chatHistory := Message{}
+		fmt.Println("TEST7")
+		err = chatRows.Scan(&chatHistory.Type, &chatHistory.Body)
+		fmt.Println("TEST8")
 		if err != nil {
 			panic(err.Error())
 		}
-
+		fmt.Println("TEST9")
 		result = append(result, chatHistory)
+		fmt.Println("TEST10")
 
 		// err := statement.Scan(&chatHistory.ID, &chatHistory.Content, &chatHistory.CreatorUsrName)
 		// if err != nil {
