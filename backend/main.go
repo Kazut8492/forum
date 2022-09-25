@@ -72,6 +72,7 @@ func main() {
 
 	addPost := func(context *gin.Context) {
 		username, cookie_err := context.Cookie("cookie")
+		fmt.Println(username)
 		if cookie_err != nil {
 			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
 			return
@@ -332,8 +333,14 @@ func main() {
 	router.Use(CORSMiddleware())
 	pool := src.NewPool()
 	go pool.Start()
-	router.GET("/ws", func(c *gin.Context) {
-		serveWs(pool, c.Writer, c.Request)
+	router.GET("/ws", func(context *gin.Context) {
+		username, cookie_err := context.Cookie("cookie")
+		if cookie_err != nil {
+			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
+			return
+		} else {
+			serveWs(pool, context.Writer, context.Request, username)
+		}
 	})
 	router.GET("/posts", getPosts)
 	router.POST("/new-post", addPost)
@@ -347,7 +354,7 @@ func main() {
 	router.Run("localhost:8080")
 }
 
-func serveWs(pool *src.Pool, w http.ResponseWriter, r *http.Request) {
+func serveWs(pool *src.Pool, w http.ResponseWriter, r *http.Request, username string) {
 	fmt.Println("src Endpoint Hit")
 	conn, err := src.Upgrade(w, r)
 	if err != nil {
@@ -355,8 +362,9 @@ func serveWs(pool *src.Pool, w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := &src.Client{
-		Conn: conn,
-		Pool: pool,
+		Conn:     conn,
+		Pool:     pool,
+		Username: username,
 	}
 
 	pool.Register <- client

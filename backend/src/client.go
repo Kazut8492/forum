@@ -22,20 +22,18 @@ func (c *Client) Read() {
 	defer db.Close()
 
 	for {
+		// Broadcast to other clients
 		messageType, p, err := c.Conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		message := Message{Type: messageType, Body: string(p)}
+		message := Message{Type: messageType, Body: string(p), CreatorUsrName: c.Username}
 		c.Pool.Broadcast <- message
 		fmt.Printf("Message Received: %+v\n", message)
 
-		var chatInfo Message
-		chatInfo.Type = message.Type
-		chatInfo.Body = message.Body
-		chatInfo.CreatorUsrName = "dummy_user"
-		fmt.Println(chatInfo)
-		InsertChat(db, chatInfo)
+		// Save chat in database
+		fmt.Println(message)
+		InsertChat(db, message)
 	}
 }
