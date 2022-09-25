@@ -1,6 +1,10 @@
 package src
 
-import "github.com/gorilla/websocket"
+import (
+	"time"
+
+	"github.com/gorilla/websocket"
+)
 
 // type Session struct {
 // 	userId     int
@@ -75,6 +79,7 @@ type Message struct {
 	Type           int    `json:"type"`
 	Body           string `json:"body"`
 	CreatorUsrName string
+	CreationTime   time.Time
 }
 
 // type ChatHistory struct {

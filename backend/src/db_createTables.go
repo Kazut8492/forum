@@ -76,6 +76,7 @@ func CreateTables(db *sql.DB) {
 			"type"				INTEGER NOT NULL,
 			"body"				TEXT NOT NULL,
 			"creator_username"	TEXT,
+			"creation_time"		DATETIME DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY("chat_id" AUTOINCREMENT),
 			FOREIGN KEY("creator_username") REFERENCES "USER"("username")
 		)`,

@@ -4,7 +4,9 @@ const Message = (props) => {
     const message = props.message;
     return (
         <div className="Message">
-            <p>{message && message.body}</p>
+            <p>Message: {message && message.body}</p>
+            <p>Username: {message && message.CreatorUsrName}</p>
+            <p>Time: {message && message.CreationTime}</p>
         </div>
     );
 }

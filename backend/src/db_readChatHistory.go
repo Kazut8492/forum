@@ -2,6 +2,7 @@ package src
 
 import (
 	"database/sql"
+	"time"
 )
 
 func ReadChatHistory(db *sql.DB) []Message {
@@ -22,10 +23,12 @@ func ReadChatHistory(db *sql.DB) []Message {
 
 	for chatRows.Next() {
 		chatHistory := Message{}
-		err = chatRows.Scan(&chatHistory.ID, &chatHistory.Type, &chatHistory.Body, &chatHistory.CreatorUsrName)
+		err = chatRows.Scan(&chatHistory.ID, &chatHistory.Type, &chatHistory.Body, &chatHistory.CreatorUsrName, &chatHistory.CreationTime)
 		if err != nil {
 			panic(err.Error())
 		}
+		//convert chatHistory.CreationTime to current timezone
+		chatHistory.CreationTime = chatHistory.CreationTime.In(time.Local)
 		result = append(result, chatHistory)
 
 		// err := statement.Scan(&chatHistory.ID, &chatHistory.Content, &chatHistory.CreatorUsrName)

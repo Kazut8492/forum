@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func InsertChat(db *sql.DB, chatInfo Message) {
+func InsertChat(db *sql.DB, message Message) {
 
 	statement, err := db.Prepare(`
 		INSERT INTO chat_history (
@@ -19,5 +19,5 @@ func InsertChat(db *sql.DB, chatInfo Message) {
 	}
 	defer statement.Close()
 	// number of variables have to be matched with INSERTed variables
-	statement.Exec(chatInfo.Type, chatInfo.Body, chatInfo.CreatorUsrName)
+	statement.Exec(message.Type, message.Body, message.CreatorUsrName)
 }
