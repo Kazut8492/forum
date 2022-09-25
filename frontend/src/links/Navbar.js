@@ -32,6 +32,7 @@ const Navbar = () => {
                     {!cookieExist && <li><Link to={`/signup/`}>Sign up</Link></li>}
                     {!cookieExist && <li><Link to={`/login/`}>Login</Link></li>}
                     {cookieExist && <li><Link to={'/posts/'} onClick={handleLogoutClick}>Logout</Link></li>}
+                    {cookieExist && <li><Link to={`/chat/`}>Chat</Link></li>}
                 </ul>
             </nav>
         </>

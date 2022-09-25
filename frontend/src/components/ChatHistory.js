@@ -6,13 +6,8 @@ const ChatHistory = (props) => {
     return (
         <div className="chat-history">
             <h2>Chat History</h2>
-            {messages && messages.map((message, index) => {
+            {messages && messages.map((message) => {
                 return <Message message={message} />
-                // return (
-                //     <div key={index}>
-                //         <p>{message.body}</p>
-                //     </div>
-                // );
             })}
         </div>
     );

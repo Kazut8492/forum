@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {connect, sendMsg} from "../api";
-import Header from '../components/Header';
 import ChatHistory from '../components/ChatHistory';
 import ChatInput from '../components/ChatInput';
+import Navbar from './Navbar';
 
 const Chat = () => {
     const [chatHistory, setChatHistory] = useState({messages:[]});
@@ -43,7 +43,7 @@ const Chat = () => {
     }
 
     return(<>
-        <Header />
+        <Navbar />
         <ChatHistory chatHistory={chatHistory} />
         <ChatInput send={handleInputSend} />
     </>);
