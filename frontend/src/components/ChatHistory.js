@@ -1,4 +1,5 @@
 import React from 'react';
+import Message from './Message';
 
 const ChatHistory = (props) => {
     const {messages} = props.chatHistory;
@@ -6,11 +7,12 @@ const ChatHistory = (props) => {
         <div className="chat-history">
             <h2>Chat History</h2>
             {messages && messages.map((message, index) => {
-                return (
-                    <div key={index}>
-                        <p>{message.body}</p>
-                    </div>
-                );
+                return <Message message={message} />
+                // return (
+                //     <div key={index}>
+                //         <p>{message.body}</p>
+                //     </div>
+                // );
             })}
         </div>
     );
