@@ -23,7 +23,7 @@ func ReadChatHistory(db *sql.DB) []Message {
 
 	for chatRows.Next() {
 		chatHistory := Message{}
-		err = chatRows.Scan(&chatHistory.ID, &chatHistory.Type, &chatHistory.Body, &chatHistory.CreatorUsrName, &chatHistory.CreationTime)
+		err = chatRows.Scan(&chatHistory.ID, &chatHistory.Type, &chatHistory.Body, &chatHistory.CreatorUsrName, &chatHistory.ReceiverUsrName, &chatHistory.CreationTime)
 		if err != nil {
 			panic(err.Error())
 		}

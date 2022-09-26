@@ -326,8 +326,15 @@ func main() {
 			return
 		} else {
 			chatHistory := src.ReadChatHistory(db)
+			// fmt.Println(chatHistory)
 			context.JSON(http.StatusOK, chatHistory)
 		}
+	}
+
+	getUsernames := func(context *gin.Context) {
+		usernames := src.ReadUsernames(db)
+		fmt.Println(usernames)
+		context.JSON(http.StatusOK, usernames)
 	}
 
 	router.Use(CORSMiddleware())
@@ -351,6 +358,7 @@ func main() {
 	router.POST("/like", addLike)
 	router.POST("/dislike", addDislike)
 	router.GET("/chatHistory", getChatHistory)
+	router.GET("/all-users", getUsernames)
 	router.Run("localhost:8080")
 }
 

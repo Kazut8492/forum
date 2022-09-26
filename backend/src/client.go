@@ -2,6 +2,7 @@ package src
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -29,8 +30,19 @@ func (c *Client) Read() {
 			log.Println(err)
 			return
 		}
+		body := string(p)
+		// convert variable body into map format
+		jsonMap := make(map[string]string)
+		err = json.Unmarshal([]byte(body), &jsonMap)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		// fmt.Println(jsonMap)
+
 		// CreationTimeについては、SQL側で自動で付与する。
-		message := Message{Type: messageType, Body: string(p), CreatorUsrName: c.Username, CreationTime: time.Now().In(time.Local)}
+		// message := Message{Type: messageType, Body: jsonMap["message"], CreatorUsrName: "TEST", ReceiverUsrName: jsonMap["receiver"], CreationTime: time.Now().In(time.Local)}
+		message := Message{Type: messageType, Body: jsonMap["message"], CreatorUsrName: c.Username, ReceiverUsrName: jsonMap["receiver"], CreationTime: time.Now().In(time.Local)}
 		// CreationTimeからミリセカンドを取り除く
 		message.CreationTime = message.CreationTime.Truncate(time.Second)
 		c.Pool.Broadcast <- message

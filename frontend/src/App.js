@@ -1,13 +1,14 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css';
-import Home from "./links/Home";
-import Signup from "./links/Signup";
-import Login from "./links/Login";
-import Post from './links/Post';
-import Chat from './links/Chat';
-import {PostsProvider} from "./links/PostsContext"
-import {CookieProvider} from './links/CookieContext';
+import Home from "./components/Home";
+import Signup from "./components/Signup";
+import Login from "./components/Login";
+import Post from './components/Post';
+import Chat from './components/Chat';
+import ChatRoom from './components/ChatRoom';
+import {PostsProvider} from "./components/PostsContext"
+import {CookieProvider} from './components/CookieContext';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
             <Route path={`/signup/`} element={<Signup />} />
             <Route path={`/login/`} element={<Login />} />
             <Route path={`/chat/`} element={<Chat />} />
+            <Route path={`/chatroom/:username`} element={<ChatRoom />} />
           </Routes>
         </PostsProvider>
       </CookieProvider>

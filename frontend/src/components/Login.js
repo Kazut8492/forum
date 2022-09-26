@@ -20,6 +20,8 @@ const Login = () => {
             Password: loginPassword,
         }
 
+        localStorage.setItem('username', loginName);
+
         fetch("http://localhost:8080/login", {
             method: "POST",
             mode: "cors",
@@ -42,10 +44,12 @@ const Login = () => {
                 setWarningUsername(data["message"])
                 setWarningPassword("")
                 navigate("/login/")
+                localStorage.clear();
             } else if (data["message"] === "Wrong password") {
                 setWarningUsername("")
                 setWarningPassword(data["message"])
                 navigate("/login/")
+                localStorage.clear();
             } else {
                 setWarningUsername("")
                 setWarningPassword("")

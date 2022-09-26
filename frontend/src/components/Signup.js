@@ -29,6 +29,8 @@ const SignUp = () => {
             LastName: lastName,
         }
 
+        localStorage.setItem('username', nickname);
+
         fetch("http://localhost:8080/new-user", {
             method:"POST",
             mode: "cors",
@@ -52,10 +54,12 @@ const SignUp = () => {
                 setWarningUsernameTaken(data["message"])
                 setWarningEmailTaken("")
                 navigate("/signup/")
+                localStorage.clear();
             } else if (data["message"] === "Email already taken") {
                 setWarningUsernameTaken("")
                 setWarningEmailTaken(data["message"])
                 navigate("/signup/")
+                localStorage.clear();
             } else {
                 setWarningUsernameTaken("")
                 setWarningEmailTaken("")

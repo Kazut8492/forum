@@ -20,6 +20,7 @@ const Navbar = () => {
             console.log(data)
             // setCookieExist(false)
             setCookieExist(doesHttpOnlyCookieExist("cookie"))
+            localStorage.clear();
         })
         .catch(error=>console.log(error))
     }
