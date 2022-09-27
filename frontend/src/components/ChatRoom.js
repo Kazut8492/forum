@@ -7,12 +7,36 @@ import Navbar from './Navbar';
 
 const ChatRoom = () => {
     const params = useParams();
-    const location = useLocation();
-    const [chatHistory, setChatHistory] = useState(location.state.chatHistory ? location.state.chatHistory :[]);
-  
-    const receiverUsername = params.username;
+    // const location = useLocation();
+    // const [chatHistory, setChatHistory] = useState(location.state.chatHistory ? location.state.chatHistory :[]);
+    const [chatHistory, setChatHistory] = useState([]);
 
-    useEffect(() => {        
+    const receiverUsername = params.username;
+    const creatorUsername = localStorage.getItem("username");
+
+    useEffect(()=>{
+        fetch("http://localhost:8080/chatHistory", {
+            method:"GET",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "include",
+            headers: {
+                "Content-Type":"application/json",
+            },
+            redirect:"manual",
+            referrer:"no-referrer"
+        })
+        .then(response=>response.json())
+        .then(data=>{
+            console.log(data)
+            let result = data ? data: [];
+            console.log({messages: result})
+            setChatHistory({messages: result})
+        })
+        .catch(error=>console.log(error))
+    },[]);
+
+    useEffect(() => {
         connect((msg) => {
             setChatHistory({messages: [...chatHistory.messages, JSON.parse(msg.data)]});
         });
@@ -30,7 +54,7 @@ const ChatRoom = () => {
 
     return (<>
         <Navbar />
-        <ChatHistory chatHistory={chatHistory} />
+        <ChatHistory chatHistory={chatHistory} creatorUsername={creatorUsername} receiverUsername={receiverUsername} />
         <ChatInput send={handleInputSend} />
     </>)
 }

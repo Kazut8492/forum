@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const Chat = () => {
     const [chatHistory, setChatHistory] = useState({messages:[]});
+    const [onlineUsers, setOnlineUsers] = useState([]);
     const [users, setUsers] = useState([]);
     const navigate = useNavigate();
 
@@ -55,14 +56,18 @@ const Chat = () => {
         // need to reload. Otherwise, old username shown up on creatorUsername of the messages
         window.location.reload();
     }
-
-    console.log(localStorage.getItem("username"))
     
     return(<>
         <Navbar />
         {users && users.map(user => {
             if (user.Username !== localStorage.getItem("username")) {
-                return <div className="post-container" onClick={()=>{handleCardClick(user)}}>{user.Username}</div>
+                return (
+                    <div className="post-container" onClick={()=>{handleCardClick(user)}}>
+                        {user.Username}
+                        {console.log(onlineUsers)}
+                        {onlineUsers.includes(user.Username) && <p className="online-status">Online</p>}
+                    </div>
+                )
             }
             return null
         })}

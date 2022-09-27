@@ -57,6 +57,28 @@ func main() {
 		}
 	}
 
+	userRowCount := 0
+	userRows, err := db.Query(`
+		SELECT * FROM user
+	`)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer userRows.Close()
+	for userRows.Next() {
+		userRowCount++
+	}
+	testUsers := []src.User{
+		{Username: "DummyUser1", Email: "DummyEmail1", Password: "DummyPassword1", Age: "111", Gender: "X", FirstName: "Dummy1", LastName: "User1"},
+		{Username: "DummyUser2", Email: "DummyEmail2", Password: "DummyPassword2", Age: "222", Gender: "X", FirstName: "Dummy2", LastName: "User2"},
+		{Username: "DummyUser3", Email: "DummyEmail3", Password: "DummyPassword3", Age: "333", Gender: "X", FirstName: "Dummy3", LastName: "User3"},
+	}
+	if userRowCount == 0 {
+		for _, user := range testUsers {
+			src.InsertUser(db, user)
+		}
+	}
+
 	fmt.Println("Server is starting")
 
 	router := gin.Default()
@@ -108,10 +130,6 @@ func main() {
 	}
 
 	addUser := func(context *gin.Context) {
-		PasswordEncrypt := func(password string) (string, error) {
-			hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-			return string(hash), err
-		}
 
 		var user src.User
 		if err := context.BindJSON(&user); err != nil {
@@ -133,12 +151,6 @@ func main() {
 				return
 			}
 		} else {
-			encryptedPass, err := PasswordEncrypt(user.Password)
-			user.Password = encryptedPass
-			if err != nil {
-				context.JSON(500, gin.H{"message": "Failed to encrypt password"})
-				return
-			}
 			src.InsertUser(db, user)
 			db_user := src.ReadUser(db, user)
 			src.InitiateSession(context, db, db_user)
@@ -333,7 +345,6 @@ func main() {
 
 	getUsernames := func(context *gin.Context) {
 		usernames := src.ReadUsernames(db)
-		fmt.Println(usernames)
 		context.JSON(http.StatusOK, usernames)
 	}
 

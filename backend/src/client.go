@@ -38,7 +38,7 @@ func (c *Client) Read() {
 			log.Println(err)
 			return
 		}
-		// fmt.Println(jsonMap)
+		fmt.Println(jsonMap)
 
 		// CreationTimeについては、SQL側で自動で付与する。
 		// message := Message{Type: messageType, Body: jsonMap["message"], CreatorUsrName: "TEST", ReceiverUsrName: jsonMap["receiver"], CreationTime: time.Now().In(time.Local)}
