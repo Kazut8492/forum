@@ -9,21 +9,24 @@ import Chat from './components/Chat';
 import ChatRoom from './components/ChatRoom';
 import {PostsProvider} from "./components/PostsContext"
 import {CookieProvider} from './components/CookieContext';
+import { OnlineUserProvider } from './components/OnlineUserContext';
 
 const App = () => {
   return (
     <BrowserRouter>
       <CookieProvider>
         <PostsProvider>
-          <Routes>
-            <Route path={`/posts/filter/:category`} element={<Home />} />
-            <Route path={`/posts/`} element={<Home />} />
-            <Route path={`/posts/:id`} element={<Post />} />
-            <Route path={`/signup/`} element={<Signup />} />
-            <Route path={`/login/`} element={<Login />} />
-            <Route path={`/chat/`} element={<Chat />} />
-            <Route path={`/chatroom/:username`} element={<ChatRoom />} />
-          </Routes>
+          <OnlineUserProvider>
+            <Routes>
+              <Route path={`/posts/filter/:category`} element={<Home />} />
+              <Route path={`/posts/`} element={<Home />} />
+              <Route path={`/posts/:id`} element={<Post />} />
+              <Route path={`/signup/`} element={<Signup />} />
+              <Route path={`/login/`} element={<Login />} />
+              <Route path={`/chat/`} element={<Chat />} />
+              <Route path={`/chatroom/:username`} element={<ChatRoom />} />
+            </Routes>
+          </OnlineUserProvider>
         </PostsProvider>
       </CookieProvider>
     </BrowserRouter>

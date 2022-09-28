@@ -9,6 +9,12 @@ const Chat = () => {
     const [users, setUsers] = useState([]);
     const navigate = useNavigate();
 
+    // useEffect(() => {
+    //     connect((msg) => {
+    //         // console.log(msg)
+    //     });
+    // });
+
     useEffect(() => {
         fetch("http://localhost:8080/all-users", {
             method:"GET",
