@@ -64,8 +64,6 @@ const Chat = () => {
                 return (
                     <div className="post-container" onClick={()=>{handleCardClick(user)}}>
                         {user.Username}
-                        {console.log(onlineUsers)}
-                        {onlineUsers.includes(user.Username) && <p className="online-status">Online</p>}
                     </div>
                 )
             }
