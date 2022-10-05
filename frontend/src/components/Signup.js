@@ -1,7 +1,7 @@
 import React, {useState, useContext} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
-import { sendMsg } from "../api";
+import { sendMsg } from "../App";
 import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
 
 const SignUp = () => {

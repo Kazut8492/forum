@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import {connect, sendMsg} from "../api";
+import {connect, sendMsg} from "../App";
 import ChatHistory from './ChatHistory';
 import ChatInput from './ChatInput';
 import Navbar from './Navbar';

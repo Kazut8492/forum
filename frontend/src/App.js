@@ -11,6 +11,39 @@ import {PostsProvider} from "./components/PostsContext"
 import {CookieProvider} from './components/CookieContext';
 import { OnlineUserProvider } from './components/OnlineUserContext';
 
+var socket = new WebSocket("ws://localhost:8080/ws");
+
+let connect = cb => {
+    console.log("connecting");
+  
+    socket.onopen = () => {
+      console.log("Successfully Connected");
+    };
+  
+    socket.onmessage = msg => {
+      console.log(msg);
+      if (JSON.parse(msg.data).type === 1) {
+        console.log("message type is 1, chat message")
+      } else if (JSON.parse(msg.data).type === 0) {
+        console.log("message type is 0, system message")
+      }
+      cb(msg);
+    };
+  
+    socket.onclose = event => {
+      console.log("Socket Closed Connection: ", event);
+    };
+  
+    socket.onerror = error => {
+      console.log("Socket Error: ", error);
+    };
+  };
+
+let sendMsg = msg => {
+  console.log("sending msg: ", msg);
+  socket.send(msg);
+};
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -32,5 +65,7 @@ const App = () => {
     </BrowserRouter>
   )
 }
+
+export { connect, sendMsg };
 
 export default App

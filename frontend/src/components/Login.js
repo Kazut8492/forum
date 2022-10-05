@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
-import {connect, sendMsg} from "../api";
+import {connect, sendMsg} from "../App";
 import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
 
 const Login = () => {

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {connect, sendMsg} from "../api";
+import {connect, sendMsg} from '../App';
 import Navbar from './Navbar';
 import { useNavigate } from "react-router-dom";
 
