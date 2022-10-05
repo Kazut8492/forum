@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { PostsContext } from "./PostsContext";
 import Navbar from "./Navbar";
 import { CookieContext } from './CookieContext';
+import { connect } from '../api';
 
 const Home = () => {
     const [filterCategory, setFilterCategory] = useState()
@@ -119,6 +120,12 @@ const Home = () => {
         })
         .catch(error=>console.log(error))
     }
+
+    // これを行うことで他のウィンドウにlogin/logoutなどのMessageEventを共有出来る、というか受け取る事ができる??
+    useEffect(() => {
+        connect(() => {
+        });
+    });
 
     useEffect(() => {
         if (categoryList.includes(filterCategory)) {

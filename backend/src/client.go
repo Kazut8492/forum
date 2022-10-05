@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -25,7 +26,8 @@ func (c *Client) Read() {
 
 	for {
 		// Broadcast to other clients
-		messageType, p, err := c.Conn.ReadMessage()
+		_, p, err := c.Conn.ReadMessage()
+		// messageType, p, err := c.Conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			return
@@ -40,16 +42,24 @@ func (c *Client) Read() {
 		}
 		fmt.Println(jsonMap)
 
+		intVar, _ := strconv.Atoi(jsonMap["type"])
 		// CreationTimeについては、SQL側で自動で付与する。
 		// message := Message{Type: messageType, Body: jsonMap["message"], CreatorUsrName: "TEST", ReceiverUsrName: jsonMap["receiver"], CreationTime: time.Now().In(time.Local)}
-		message := Message{Type: messageType, Body: jsonMap["message"], CreatorUsrName: jsonMap["creator"], ReceiverUsrName: jsonMap["receiver"], CreationTime: time.Now().In(time.Local)}
+		message := Message{Type: intVar, Body: jsonMap["message"], CreatorUsrName: jsonMap["creator"], ReceiverUsrName: jsonMap["receiver"], CreationTime: time.Now().In(time.Local)}
+		fmt.Printf("message type: %d\n", intVar)
 		// CreationTimeからミリセカンドを取り除く
 		message.CreationTime = message.CreationTime.Truncate(time.Second)
-		c.Pool.Broadcast <- message
 		fmt.Printf("Message Received: %+v\n", message)
+		c.Pool.Broadcast <- message
 
-		// Save chat in database
-		fmt.Println(message)
-		InsertChat(db, message)
+		if message.Type == 1 {
+			// Save chat in database
+			fmt.Println(message)
+			InsertChat(db, message)
+		} else if message.Type == 0 {
+			// system message about login & logout
+			fmt.Println(message)
+		}
+
 	}
 }

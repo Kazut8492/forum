@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
+import {connect, sendMsg} from "../api";
 import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
 
 const Login = () => {
@@ -35,10 +36,6 @@ const Login = () => {
         .then(response=>response.json())
         .then((data)=>{
             console.log(data)
-            event.target.reset()
-            setLoginName('')
-            setLoginPassword('')
-            setCookieExist(doesHttpOnlyCookieExist("cookie"))
             
             if (data["message"] === "Wrong username / email") {
                 setWarningUsername(data["message"])
@@ -54,9 +51,18 @@ const Login = () => {
                 setWarningUsername("")
                 setWarningPassword("")
                 navigate("/posts/")
+                const body = {type: "0", message: "login", creator: "SYSTEM", receiver: loginName};
+                const jsonBody = JSON.stringify(body);
+                sendMsg(jsonBody);
             }
         })
         .catch(error=>console.log(error))
+        .finally(()=>{
+            event.target.reset()
+            setLoginName('')
+            setLoginPassword('')
+            setCookieExist(doesHttpOnlyCookieExist("cookie"))
+        })
     }
 
     return (

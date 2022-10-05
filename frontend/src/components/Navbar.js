@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
+import {connect, sendMsg} from "../api";
 
 const Navbar = () => {
     const {cookieExist, setCookieExist} = useContext(CookieContext)
@@ -19,6 +20,9 @@ const Navbar = () => {
         .then(data=>{
             console.log(data)
             // setCookieExist(false)
+            const body = {type: "0", message: "logout", creator: "SYSTEM", receiver: localStorage.getItem("username")};
+            const jsonBody = JSON.stringify(body);
+            sendMsg(jsonBody);
             setCookieExist(doesHttpOnlyCookieExist("cookie"))
             localStorage.clear();
         })

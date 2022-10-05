@@ -48,11 +48,9 @@ const ChatRoom = () => {
 
     const handleInputSend = (event) => {
         if(event.keyCode === 13) {
-            const body = {message: event.target.value, creator: creatorUsername, receiver: receiverUsername};
+            const body = {type: "1", message: event.target.value, creator: creatorUsername, receiver: receiverUsername};
             const jsonBody = JSON.stringify(body);
             sendMsg(jsonBody);
-            console.log("YES")
-            // sendMsg(event.target.value);
             event.target.value = "";
         }
     }

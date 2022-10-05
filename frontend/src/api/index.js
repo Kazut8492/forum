@@ -10,6 +10,11 @@ let connect = cb => {
   
     socket.onmessage = msg => {
       console.log(msg);
+      if (JSON.parse(msg.data).type === 1) {
+        console.log("message type is 1, chat message")
+      } else if (JSON.parse(msg.data).type === 0) {
+        console.log("message type is 0, system message")
+      }
       cb(msg);
     };
   

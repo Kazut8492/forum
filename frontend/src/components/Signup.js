@@ -1,6 +1,7 @@
 import React, {useState, useContext} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
+import { sendMsg } from "../api";
 import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
 
 const SignUp = () => {
@@ -44,12 +45,6 @@ const SignUp = () => {
         .then(response=>response.json())
         .then((data)=>{
             console.log(data)
-            event.target.reset()
-            setNickname('')
-            setEmail('')
-            setPassword('')
-            setCookieExist(doesHttpOnlyCookieExist("cookie"))
-
             if (data["message"] === "Nickname already taken") {
                 setWarningUsernameTaken(data["message"])
                 setWarningEmailTaken("")
@@ -64,9 +59,23 @@ const SignUp = () => {
                 setWarningUsernameTaken("")
                 setWarningEmailTaken("")
                 navigate("/posts/")
+                const body = {type: "0", message: "signup", creator: "SYSTEM", receiver: nickname};
+                const jsonBody = JSON.stringify(body);
+                sendMsg(jsonBody);
             }
         })
         .catch(error=>console.log(error))
+        .finally(()=>{
+            event.target.reset()
+            setNickname('')
+            setAge('')
+            setGender('x')
+            setFirstName('')
+            setLastName('')
+            setEmail('')
+            setPassword('')
+            setCookieExist(doesHttpOnlyCookieExist("cookie"))
+        })
     }
 
 

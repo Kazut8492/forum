@@ -3,11 +3,11 @@ import { createContext, useState } from "react";
 const OnlineUserContext = createContext();
 
 const OnlineUserProvider = (props) => {
-    const [onlineUser, setOnlineUser] = useState([]);
+    const [onlineUsers, setOnlineUsers] = useState([]);
 
     const value = {
-        onlineUser: onlineUser,
-        setOnlineUser: setOnlineUser
+        onlineUsers: onlineUsers,
+        setOnlineUsers: setOnlineUsers
     }
 
     return (
