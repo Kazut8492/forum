@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const Chat = () => {
     const [chatHistory, setChatHistory] = useState({messages:[]});
     const [onlineUsers, setOnlineUsers] = useState([]);
+    const [username, setUsername] = useState(localStorage.getItem("username"));
     const [users, setUsers] = useState([]);
     const navigate = useNavigate();
 
@@ -55,13 +56,13 @@ const Chat = () => {
     const handleCardClick = (selectedUser) => {
         navigate(`/chatroom/${selectedUser.Username}`, {state:{chatHistory}})
         // need to reload. Otherwise, old username shown up on creatorUsername of the messages
-        window.location.reload();
+        // window.location.reload();
     }
     
     return(<>
         <Navbar />
         {users && users.map(user => {
-            if (user.Username !== localStorage.getItem("username")) {
+            if (user.Username !== username) {
                 return (
                     <div className="post-container" onClick={()=>{handleCardClick(user)}}>
                         {user.Username}

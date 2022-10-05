@@ -42,7 +42,7 @@ func (c *Client) Read() {
 
 		// CreationTimeについては、SQL側で自動で付与する。
 		// message := Message{Type: messageType, Body: jsonMap["message"], CreatorUsrName: "TEST", ReceiverUsrName: jsonMap["receiver"], CreationTime: time.Now().In(time.Local)}
-		message := Message{Type: messageType, Body: jsonMap["message"], CreatorUsrName: c.Username, ReceiverUsrName: jsonMap["receiver"], CreationTime: time.Now().In(time.Local)}
+		message := Message{Type: messageType, Body: jsonMap["message"], CreatorUsrName: jsonMap["creator"], ReceiverUsrName: jsonMap["receiver"], CreationTime: time.Now().In(time.Local)}
 		// CreationTimeからミリセカンドを取り除く
 		message.CreationTime = message.CreationTime.Truncate(time.Second)
 		c.Pool.Broadcast <- message

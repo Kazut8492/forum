@@ -53,13 +53,13 @@ const SignUp = () => {
             if (data["message"] === "Nickname already taken") {
                 setWarningUsernameTaken(data["message"])
                 setWarningEmailTaken("")
-                navigate("/signup/")
                 localStorage.clear();
+                navigate("/signup/")
             } else if (data["message"] === "Email already taken") {
                 setWarningUsernameTaken("")
                 setWarningEmailTaken(data["message"])
-                navigate("/signup/")
                 localStorage.clear();
+                navigate("/signup/")
             } else {
                 setWarningUsernameTaken("")
                 setWarningEmailTaken("")

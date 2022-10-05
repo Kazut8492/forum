@@ -68,10 +68,9 @@ type Pool struct {
 }
 
 type Client struct {
-	ID       string
-	Conn     *websocket.Conn
-	Pool     *Pool
-	Username string
+	ID   string
+	Conn *websocket.Conn
+	Pool *Pool
 }
 
 type Message struct {

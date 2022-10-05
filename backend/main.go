@@ -352,13 +352,8 @@ func main() {
 	pool := src.NewPool()
 	go pool.Start()
 	router.GET("/ws", func(context *gin.Context) {
-		username, cookie_err := context.Cookie("cookie")
-		if cookie_err != nil {
-			context.JSON(500, gin.H{"message": "Issue on reading cookie"})
-			return
-		} else {
-			serveWs(pool, context.Writer, context.Request, username)
-		}
+		// この場合、ユーザー毎に接続を管理していないのでこのcookieが誰のものかわからない？
+		serveWs(pool, context.Writer, context.Request)
 	})
 	router.GET("/posts", getPosts)
 	router.POST("/new-post", addPost)
@@ -373,7 +368,7 @@ func main() {
 	router.Run("localhost:8080")
 }
 
-func serveWs(pool *src.Pool, w http.ResponseWriter, r *http.Request, username string) {
+func serveWs(pool *src.Pool, w http.ResponseWriter, r *http.Request) {
 	fmt.Println("src Endpoint Hit")
 	conn, err := src.Upgrade(w, r)
 	if err != nil {
@@ -381,9 +376,8 @@ func serveWs(pool *src.Pool, w http.ResponseWriter, r *http.Request, username st
 	}
 
 	client := &src.Client{
-		Conn:     conn,
-		Pool:     pool,
-		Username: username,
+		Conn: conn,
+		Pool: pool,
 	}
 
 	pool.Register <- client

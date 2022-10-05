@@ -16,19 +16,18 @@ func NewPool() *Pool {
 func (pool *Pool) Start() {
 	for {
 		select {
-		case client := <-pool.Register:
-			pool.Clients[client] = true
+		case client1 := <-pool.Register:
+			pool.Clients[client1] = true
 			fmt.Println("Size of Connection Pool: ", len(pool.Clients))
 			for client, _ := range pool.Clients {
-				client.Conn.WriteJSON(Message{Type: 1, Body: "New User Joined...", ReceiverUsrName: client.Username})
+				client.Conn.WriteJSON(Message{Type: 1, Body: "New User Joined..."})
 			}
 			break
-		case client := <-pool.Unregister:
-			username := client.Username
-			delete(pool.Clients, client)
+		case client1 := <-pool.Unregister:
+			delete(pool.Clients, client1)
 			fmt.Println("Size of Connection Pool: ", len(pool.Clients))
 			for client, _ := range pool.Clients {
-				client.Conn.WriteJSON(Message{Type: 1, Body: "User Disconnected...", ReceiverUsrName: username})
+				client.Conn.WriteJSON(Message{Type: 1, Body: "User Disconnected..."})
 			}
 			break
 		case message := <-pool.Broadcast:

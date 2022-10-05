@@ -10,9 +10,13 @@ const ChatRoom = () => {
     // const location = useLocation();
     // const [chatHistory, setChatHistory] = useState(location.state.chatHistory ? location.state.chatHistory :[]);
     const [chatHistory, setChatHistory] = useState([]);
+    // const [username, setUsername] = useState(localStorage.getItem("username"));
+
+    // console.log("🚀 ~ file: ChatRoom.js ~ line 14 ~ ChatRoom ~ username", username)
 
     const receiverUsername = params.username;
     const creatorUsername = localStorage.getItem("username");
+    console.log("🚀 ~ file: ChatRoom.js ~ line 19 ~ ChatRoom ~ creatorUsername", creatorUsername)
 
     useEffect(()=>{
         fetch("http://localhost:8080/chatHistory", {
@@ -44,9 +48,10 @@ const ChatRoom = () => {
 
     const handleInputSend = (event) => {
         if(event.keyCode === 13) {
-            const body = {message: event.target.value, receiver: receiverUsername};
+            const body = {message: event.target.value, creator: creatorUsername, receiver: receiverUsername};
             const jsonBody = JSON.stringify(body);
             sendMsg(jsonBody);
+            console.log("YES")
             // sendMsg(event.target.value);
             event.target.value = "";
         }
