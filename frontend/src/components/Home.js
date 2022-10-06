@@ -3,7 +3,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { PostsContext } from "./PostsContext";
 import Navbar from "./Navbar";
 import { CookieContext } from './CookieContext';
-import { connect } from '../App';
+import { WebsocketContext } from './WebsocketContext';
+import {OnlineUsersContext} from "./OnlineUsersContext";
 
 const Home = () => {
     const [filterCategory, setFilterCategory] = useState()
@@ -15,6 +16,9 @@ const Home = () => {
     const navigate = useNavigate();
     const {category} = useParams();
     const categoryList = ["science", "education", "sports", "lifehacks"]
+
+    const {connect, sendMsg} = useContext(WebsocketContext);
+    const {onlineUsers, setOnlineUsers} = useContext(OnlineUsersContext);
 
     // If user jumped to URL with category param, then set filter category with it.
     if (category && !filterCategory) {
@@ -121,11 +125,19 @@ const Home = () => {
         .catch(error=>console.log(error))
     }
 
-    // これを行うことで他のウィンドウにlogin/logoutなどのMessageEventを共有出来る、というか受け取る事ができる??
-    useEffect(() => {
-        connect(() => {
-        });
-    });
+    // // これを行うことで他のウィンドウにlogin/logoutなどのMessageEventを共有出来る、というか受け取る事ができる??
+    // useEffect(() => {
+    //     connect((msg) => {
+    //         const dataObj = JSON.parse(msg.data);
+    //         if (dataObj.type === 0) {
+    //             if ((dataObj.body === "login" || dataObj.body === "signup") && !onlineUsers.includes(dataObj.ReceiverUsrName)) {
+    //                 setOnlineUsers([...onlineUsers, dataObj.ReceiverUsrName]);
+    //             } else if (dataObj.body === "logout" && onlineUsers.includes(dataObj.ReceiverUsrName)) {
+    //                 setOnlineUsers(onlineUsers.filter(user => user !== dataObj.ReceiverUsrName));
+    //             }
+    //         }
+    //     });
+    // });
 
     useEffect(() => {
         if (categoryList.includes(filterCategory)) {

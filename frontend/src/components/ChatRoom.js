@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import {connect, sendMsg} from "../App";
 import ChatHistory from './ChatHistory';
 import ChatInput from './ChatInput';
 import Navbar from './Navbar';
+import { WebsocketContext } from './WebsocketContext';
 
 const ChatRoom = () => {
     const params = useParams();
@@ -11,6 +11,8 @@ const ChatRoom = () => {
     // const [chatHistory, setChatHistory] = useState(location.state.chatHistory ? location.state.chatHistory :[]);
     const [chatHistory, setChatHistory] = useState([]);
     // const [username, setUsername] = useState(localStorage.getItem("username"));
+
+    const {connect, sendMsg} = useContext(WebsocketContext);
 
     // console.log("🚀 ~ file: ChatRoom.js ~ line 14 ~ ChatRoom ~ username", username)
 

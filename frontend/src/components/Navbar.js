@@ -2,9 +2,14 @@ import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
 import {connect, sendMsg} from "../App";
+import { WebsocketContext } from './WebsocketContext';
+
 
 const Navbar = () => {
     const {cookieExist, setCookieExist} = useContext(CookieContext)
+
+    const {connect, sendMsg} = useContext(WebsocketContext);
+
 
     const handleLogoutClick = () => {
         fetch("http://localhost:8080/logout", {

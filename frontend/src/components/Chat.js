@@ -1,15 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {connect, sendMsg} from '../App';
+import React, {useEffect, useState, useContext} from 'react';
 import Navbar from './Navbar';
 import { useNavigate } from "react-router-dom";
+import {OnlineUsersContext} from "./OnlineUsersContext";
 
 const Chat = () => {
     const [chatHistory, setChatHistory] = useState({messages:[]});
-    const [onlineUsers, setOnlineUsers] = useState([]);
     const [username, setUsername] = useState(localStorage.getItem("username"));
     const [users, setUsers] = useState([]);
     const navigate = useNavigate();
-
+    const {onlineUsers} = useContext(OnlineUsersContext);
 
     useEffect(() => {
         fetch("http://localhost:8080/all-users", {

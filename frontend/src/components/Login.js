@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import {connect, sendMsg} from "../App";
 import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
+import { WebsocketContext } from './WebsocketContext';
+
 
 const Login = () => {
     const [loginName, setLoginName] = useState("")
@@ -11,6 +13,8 @@ const Login = () => {
     const [warningPassword, setWarningPassword] = useState("")
     const {cookieExist, setCookieExist} = useContext(CookieContext);
     const navigate = useNavigate()
+
+    const {connect, sendMsg} = useContext(WebsocketContext);
 
     const handleLoginSubmit = (event) => {
         event.preventDefault();
