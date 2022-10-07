@@ -348,6 +348,11 @@ func main() {
 		context.JSON(http.StatusOK, usernames)
 	}
 
+	getOnlineUsers := func(context *gin.Context) {
+		onlineUsers := src.ReadOnlineUsers(db)
+		context.JSON(http.StatusOK, onlineUsers)
+	}
+
 	router.Use(CORSMiddleware())
 	pool := src.NewPool()
 	go pool.Start()
@@ -365,6 +370,7 @@ func main() {
 	router.POST("/dislike", addDislike)
 	router.GET("/chatHistory", getChatHistory)
 	router.GET("/all-users", getUsernames)
+	router.GET("/online-users", getOnlineUsers)
 	router.Run("localhost:8080")
 }
 

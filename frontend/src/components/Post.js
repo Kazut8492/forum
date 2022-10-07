@@ -130,8 +130,8 @@ const Post = () => {
                                     <p>{comment.Content}</p>
                                     <p>CommentID: {comment.ID}</p>
                                     <p>Username: {comment.CreatorUsrName}</p>
-                                    <button onClick={(event)=>{handleDislikeClick(event, post.ID, comment.ID)}}>{comment.Dislikes ? comment.Dislikes.length : 0} 👎</button>
-                                    <button onClick={(event)=>{handleLikeClick(event, post.ID, comment.ID)}}>{comment.Likes ? comment.Likes.length : 0} 👍</button>
+                                    <button disabled={cookieExist ? '': 'disabled'} onClick={(event)=>{handleDislikeClick(event, post.ID, comment.ID)}}>{comment.Dislikes ? comment.Dislikes.length : 0} 👎</button>
+                                    <button disabled={cookieExist ? '': 'disabled'} onClick={(event)=>{handleLikeClick(event, post.ID, comment.ID)}}>{comment.Likes ? comment.Likes.length : 0} 👍</button>
                                     <hr />
                                 </div>
                             </>)

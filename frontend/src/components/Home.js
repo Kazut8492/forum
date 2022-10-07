@@ -18,7 +18,7 @@ const Home = () => {
     const categoryList = ["science", "education", "sports", "lifehacks"]
 
     const {connect, sendMsg} = useContext(WebsocketContext);
-    const {onlineUsers, setOnlineUsers} = useContext(OnlineUsersContext);
+    const {onlineUsers} = useContext(OnlineUsersContext);
 
     // If user jumped to URL with category param, then set filter category with it.
     if (category && !filterCategory) {
@@ -200,8 +200,8 @@ const Home = () => {
                                     })}
                                     <hr style={styles.hr}></hr>
                                     <p className='post-text'>{post.Content}</p>
-                                    <button onClick={(event)=>{handleDislikeClick(event, post.ID)}}>{post.Dislikes ? post.Dislikes.length : 0} 👎</button>
-                                    <button onClick={(event)=>{handleLikeClick(event, post.ID)}}>{post.Likes ? post.Likes.length : 0} 👍</button>
+                                    <button disabled={cookieExist ? '': 'disabled'} onClick={(event)=>{handleLikeClick(event, post.ID)}}>{post.Likes ? post.Likes.length : 0} 👍</button>
+                                    <button disabled={cookieExist ? '': 'disabled'} onClick={(event)=>{handleDislikeClick(event, post.ID)}}>{post.Dislikes ? post.Dislikes.length : 0} 👎</button>
                                 </div>
                             </>);
                         }

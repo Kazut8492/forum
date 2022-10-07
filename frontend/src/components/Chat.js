@@ -2,6 +2,7 @@ import React, {useEffect, useState, useContext} from 'react';
 import Navbar from './Navbar';
 import { useNavigate } from "react-router-dom";
 import {OnlineUsersContext} from "./OnlineUsersContext";
+import { CookieContext } from './CookieContext';
 
 const Chat = () => {
     const [chatHistory, setChatHistory] = useState({messages:[]});
@@ -9,6 +10,7 @@ const Chat = () => {
     const [users, setUsers] = useState([]);
     const navigate = useNavigate();
     const {onlineUsers} = useContext(OnlineUsersContext);
+    const {cookieExist} = useContext(CookieContext);
 
     useEffect(() => {
         fetch("http://localhost:8080/all-users", {
@@ -57,20 +59,27 @@ const Chat = () => {
         // need to reload. Otherwise, old username shown up on creatorUsername of the messages
         // window.location.reload();
     }
+
+    if (!cookieExist) {
+        navigate("/posts");
+        return
+    } else {
+        return(<>
+            <Navbar />
+            {users && users.map(user => {
+                if (user.Username !== username) {
+                    return (
+                        <div className="post-container" onClick={()=>{handleCardClick(user)}}>
+                            {user.Username}
+                            {onlineUsers.includes(user.Username) ? <p>online!!</p> : <p>offline</p>}
+                        </div>
+                    )
+                }
+                return null
+            })}
+        </>);
+    }
     
-    return(<>
-        <Navbar />
-        {users && users.map(user => {
-            if (user.Username !== username) {
-                return (
-                    <div className="post-container" onClick={()=>{handleCardClick(user)}}>
-                        {user.Username}
-                    </div>
-                )
-            }
-            return null
-        })}
-    </>);
 }
 
 export default Chat;

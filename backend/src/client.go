@@ -59,6 +59,29 @@ func (c *Client) Read() {
 		} else if message.Type == 0 {
 			// system message about login & logout
 			fmt.Println(message)
+			if message.Body == "login" || message.Body == "signup" {
+				statement, err := db.Prepare(`
+					INSERT INTO online_users (
+						username
+					) VALUES (?)
+				`)
+				if err != nil {
+					log.Fatal(err.Error())
+				}
+				defer statement.Close()
+				// number of variables have to be matched with INSERTed variables
+				statement.Exec(message.ReceiverUsrName)
+			} else if message.Body == "logout" {
+				statement, err := db.Prepare(`
+					DELETE FROM online_users WHERE username = ?
+				`)
+				if err != nil {
+					log.Fatal(err.Error())
+				}
+				defer statement.Close()
+				// number of variables have to be matched with INSERTed variables
+				statement.Exec(message.ReceiverUsrName)
+			}
 		}
 
 	}
