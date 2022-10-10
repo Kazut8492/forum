@@ -5,7 +5,7 @@ const WebsocketContext = createContext();
 
 const WebsocketProvider = (props) => {
 
-    const {setOnlineUsers} = useContext(OnlineUsersContext);
+    const {setOnlineUsers, sortedUsers, setSortedUsers} = useContext(OnlineUsersContext);
 
     var socket = new WebSocket("ws://localhost:8080/ws");
 
@@ -37,6 +37,13 @@ const WebsocketProvider = (props) => {
                 // } else if (dataObj.body === "logout" && onlineUsers.includes(dataObj.ReceiverUsrName)) {
                 //     setOnlineUsers(onlineUsers.filter(user => user !== dataObj.ReceiverUsrName));
                 // }
+            } else if (dataObj.type === 1 && dataObj.CreatorUsrName !== "") {
+                console.log("New message")
+                // const currentUser = localStorage.getItem("username");
+                // const otherUser = dataObj.CreatorUsrName === currentUser ? dataObj.ReceiverUsrName : dataObj.CreatorUsrName;
+                // const result = sortedUsers.filter(user => user !== otherUser);
+                // result.push(otherUser);
+                // setSortedUsers(result);
             }
         });
     });

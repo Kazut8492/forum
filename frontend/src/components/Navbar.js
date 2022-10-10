@@ -4,7 +4,6 @@ import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
 import {connect, sendMsg} from "../App";
 import { WebsocketContext } from './WebsocketContext';
 
-
 const Navbar = () => {
     const {cookieExist, setCookieExist} = useContext(CookieContext)
 
