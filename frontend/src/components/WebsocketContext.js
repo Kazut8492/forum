@@ -27,7 +27,7 @@ const WebsocketProvider = (props) => {
                 })
                 .then(response=>response.json())
                 .then(data=>{
-                    console.log(data)
+                    console.log("🚀 ~ file: WebsocketContext.js ~ line 31 ~ connect ~ data", data)
                     let result = data ? data: [];
                     setOnlineUsers(result)
                 })
@@ -39,11 +39,11 @@ const WebsocketProvider = (props) => {
                 // }
             } else if (dataObj.type === 1 && dataObj.CreatorUsrName !== "") {
                 console.log("New message")
-                // const currentUser = localStorage.getItem("username");
-                // const otherUser = dataObj.CreatorUsrName === currentUser ? dataObj.ReceiverUsrName : dataObj.CreatorUsrName;
-                // const result = sortedUsers.filter(user => user !== otherUser);
-                // result.push(otherUser);
-                // setSortedUsers(result);
+                const currentUser = localStorage.getItem("username");
+                const otherUser = dataObj.CreatorUsrName === currentUser ? dataObj.ReceiverUsrName : dataObj.CreatorUsrName;
+                const result = sortedUsers.filter(user => user !== otherUser);
+                result.push(otherUser);
+                setSortedUsers(result);
             }
         });
     });
