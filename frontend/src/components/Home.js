@@ -18,7 +18,6 @@ const Home = () => {
     const categoryList = ["science", "education", "sports", "lifehacks"]
 
     const {connect, sendMsg} = useContext(WebsocketContext);
-    const {onlineUsers} = useContext(OnlineUsersContext);
 
     // If user jumped to URL with category param, then set filter category with it.
     if (category && !filterCategory) {

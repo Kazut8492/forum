@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Message from './Message';
+import {OnlineUsersContext} from './OnlineUsersContext';
 
 const ChatHistory = (props) => {
-    const {messages} = props.chatHistory;
+    const {chatHistory} = useContext(OnlineUsersContext);
+    const messages = chatHistory.messages;
     const creatorUsername = props.creatorUsername;
     const receiverUsername = props.receiverUsername;
     return (

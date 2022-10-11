@@ -5,7 +5,7 @@ const WebsocketContext = createContext();
 
 const WebsocketProvider = (props) => {
 
-    const {setOnlineUsers, sortedUsers, setSortedUsers} = useContext(OnlineUsersContext);
+    const {setOnlineUsers, sortedUsers, setSortedUsers, chatHistory, setChatHistory} = useContext(OnlineUsersContext);
 
     var socket = new WebSocket("ws://localhost:8080/ws");
 
@@ -44,6 +44,8 @@ const WebsocketProvider = (props) => {
                 const result = sortedUsers.filter(user => user !== otherUser);
                 result.push(otherUser);
                 setSortedUsers(result);
+                console.log("🚀 ~ file: WebsocketContext.js ~ line 48 ~ connect ~ dataObj", [...chatHistory.messages, dataObj])
+                setChatHistory({messages: [...chatHistory.messages, dataObj]});
             }
         });
     });
@@ -68,7 +70,7 @@ const WebsocketProvider = (props) => {
             console.log("Socket Error: ", error);
         };
     };
-    
+
     let sendMsg = msg => {
         console.log("sending msg: ", msg);
         socket.send(msg);

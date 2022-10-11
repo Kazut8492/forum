@@ -24,6 +24,7 @@ const OnlineUsersProvider = (props) => {
         .then(data=>{
             let result = data ? data: [];
             console.log({messages: result})
+            console.log("Initiall")
             setChatHistory({messages: result})
         })
         .catch(error=>console.log(error))
@@ -50,25 +51,19 @@ const OnlineUsersProvider = (props) => {
 
             let allUsernames = data.map(user => user.Username).filter(username => username !== currentUser);
             // sort allUsernames in alphabetical order
-            allUsernames.sort();
-            let result = allUsernames;
+            let result = allUsernames.sort();
 
-            for (let i = chatHistory.messages.length-1; i >= 0; i--) {
-                const element = chatHistory.messages[i];
+            chatHistory.messages.forEach((element)=>{
                 if ((element.CreatorUsrName === currentUser || element.ReceiverUsrName === currentUser)) {
                     const otherUser = element.CreatorUsrName === currentUser ? element.ReceiverUsrName : element.CreatorUsrName;
-                    if (allUsernames.includes(otherUser)) {
+                    if (result.includes(otherUser)) {
                         result = result.filter(user => user !== otherUser);
-                        result.push(otherUser);
-                        allUsernames = allUsernames.filter(username => username !== otherUser)
                     }
-                    if (allUsernames.length === 0) {
-                        break;
-                    }
+                    result.unshift(otherUser);
                 }
-            }
-            setSortedUsers(result);
+            });
             console.log("🚀 ~ file: OnlineUsersContext.js ~ line 72 ~ useEffect ~ result", result)
+            setSortedUsers(result);
 
         })
         .catch(error => console.log(error));
