@@ -3,7 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import ChatHistory from './ChatHistory';
 import ChatInput from './ChatInput';
 import Navbar from './Navbar';
-import { connect, sendMsg } from "./Index";
+import { connect, sendMsg } from "./index";
 import {OnlineUsersContext} from "./OnlineUsersContext";
 
 const ChatRoom = () => {

@@ -3,7 +3,7 @@ import Navbar from './Navbar';
 import { useNavigate } from "react-router-dom";
 import {OnlineUsersContext} from "./OnlineUsersContext";
 import { CookieContext } from './CookieContext';
-import { connect, sendMsg } from "./Index";
+import { connect, sendMsg } from "./index";
 
 const Chat = () => {
     const [username, setUsername] = useState(localStorage.getItem("username"));
