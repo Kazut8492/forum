@@ -17,6 +17,7 @@ const Chat = () => {
     }
 
     if (!cookieExist) {
+        // If Chat component is in '/posts', it would case an infinite loop.
         // navigate("/posts");
         return
     } else {
