@@ -67,7 +67,7 @@ const OnlineUsersProvider = (props) => {
 
         })
         .catch(error => console.log(error));
-    }, [chatHistory]);
+    }, [chatHistory, onlineUsers]);
 
     useEffect(()=>{
         console.log(onlineUsers)

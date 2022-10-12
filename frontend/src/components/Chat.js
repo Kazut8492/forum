@@ -74,7 +74,6 @@ useEffect(() => {
         return(<>
             {/* <Navbar /> */}
             {sortedUsers && sortedUsers.map(user => {
-                console.log("🚀 ~ file: Chat.js ~ line 26 ~ Chat ~ user", user)
                 if (user !== username) {
                     return (
                         <div className="post-container" onClick={()=>{handleCardClick(user)}}>
