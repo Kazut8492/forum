@@ -25,7 +25,7 @@ const App = () => {
               <Route path={`/`} element={<Home />} />
               <Route path={`/signup/`} element={<Signup />} />
               <Route path={`/login/`} element={<Login />} />
-              <Route path={`/chat/`} element={<Chat />} />
+              {/* <Route path={`/chat/`} element={<Chat />} /> */}
               <Route path={`/chatroom/:username`} element={<ChatRoom />} />
             </Routes>
           </OnlineUsersProvider>
