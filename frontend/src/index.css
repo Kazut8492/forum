@@ -190,13 +190,14 @@ code {
   padding: 0;
 }
 
-.ChatHistory {
-  background-color: #f7f7f7;
+.chat-history {
+  background-color: rgb(26, 33, 61);
+  color: #9498ab;
   margin: 0;
   padding: 20px;
 }
 
-.ChatHistory h2 {
+.chat-history h2 {
   margin: 0;
   padding: 0;
 }
@@ -220,7 +221,9 @@ code {
 
 .Message {
   display: block;
-  background-color: white;
+  /* background-color: white; */
+  background-color:  rgb(42, 52, 94);
+  color: #9498ab;
   margin: 5px 25px;
   box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.2);
   padding: 5px 10px;

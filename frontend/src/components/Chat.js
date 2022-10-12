@@ -17,11 +17,11 @@ const Chat = () => {
     }
 
     if (!cookieExist) {
-        navigate("/posts");
+        // navigate("/posts");
         return
     } else {
         return(<>
-            <Navbar />
+            {/* <Navbar /> */}
             {sortedUsers && sortedUsers.map(user => {
                 console.log("🚀 ~ file: Chat.js ~ line 26 ~ Chat ~ user", user)
                 if (user !== username) {

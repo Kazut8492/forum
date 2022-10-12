@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { PostsContext } from "./PostsContext";
 import Navbar from "./Navbar";
+import Chat from "./Chat";
 import { CookieContext } from './CookieContext';
 import { WebsocketContext } from './WebsocketContext';
 import {OnlineUsersContext} from "./OnlineUsersContext";
@@ -206,6 +207,7 @@ const Home = () => {
                         }
                         return null;
                     })}
+                    <Chat />
                 </div>
             </main>
         </>
