@@ -9,7 +9,6 @@ const Navbar = () => {
 
     const {connect, sendMsg} = useContext(WebsocketContext);
 
-
     const handleLogoutClick = () => {
         fetch("http://localhost:8080/logout", {
             method:"GET",

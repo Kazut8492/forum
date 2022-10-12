@@ -13,6 +13,7 @@ const WebsocketProvider = (props) => {
     useEffect(() => {
         connect((msg) => {
             const dataObj = JSON.parse(msg.data);
+            console.log("🚀 ~ file: WebsocketContext.js ~ line 16 ~ connect ~ dataObj", dataObj)
             if (dataObj.type === 0) {
                 fetch("http://localhost:8080/online-users", {
                     method:"GET",
@@ -38,14 +39,18 @@ const WebsocketProvider = (props) => {
                 //     setOnlineUsers(onlineUsers.filter(user => user !== dataObj.ReceiverUsrName));
                 // }
             } else if (dataObj.type === 1 && dataObj.CreatorUsrName !== "") {
+                const equals = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+                console.log("🚀 ~ file: WebsocketContext.js ~ line 42 ~ connect ~ dataObj", dataObj)
                 console.log("New message")
                 const currentUser = localStorage.getItem("username");
                 const otherUser = dataObj.CreatorUsrName === currentUser ? dataObj.ReceiverUsrName : dataObj.CreatorUsrName;
                 const result = sortedUsers.filter(user => user !== otherUser);
                 result.push(otherUser);
                 setSortedUsers(result);
-                console.log("🚀 ~ file: WebsocketContext.js ~ line 48 ~ connect ~ dataObj", [...chatHistory.messages, dataObj])
-                setChatHistory({messages: [...chatHistory.messages, dataObj]});
+                console.log("🚀 ~ file: WebsocketContext.js ~ line 222 ~ connect ~ dataObj", dataObj)
+                if (!equals(chatHistory.messages, [...chatHistory.messages, dataObj])) {
+                    setChatHistory({messages: [...chatHistory.messages, dataObj]});
+                }
             }
         });
     });
