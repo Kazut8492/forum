@@ -10,7 +10,6 @@ import ChatRoom from './components/ChatRoom';
 import {PostsProvider} from "./components/PostsContext"
 import {CookieProvider} from './components/CookieContext';
 import { OnlineUsersProvider } from './components/OnlineUsersContext';
-import {WebsocketProvider} from "./components/WebsocketContext";
 
 
 const App = () => {
@@ -19,18 +18,16 @@ const App = () => {
       <CookieProvider>
         <PostsProvider>
           <OnlineUsersProvider>
-            <WebsocketProvider>
-              <Routes>
-                <Route path={`/posts/filter/:category`} element={<Home />} />
-                <Route path={`/posts/`} element={<Home />} />
-                <Route path={`/posts/:id`} element={<Post />} />
-                <Route path={`/`} element={<Home />} />
-                <Route path={`/signup/`} element={<Signup />} />
-                <Route path={`/login/`} element={<Login />} />
-                <Route path={`/chat/`} element={<Chat />} />
-                <Route path={`/chatroom/:username`} element={<ChatRoom />} />
-              </Routes>
-            </WebsocketProvider>
+            <Routes>
+              <Route path={`/posts/filter/:category`} element={<Home />} />
+              <Route path={`/posts/`} element={<Home />} />
+              <Route path={`/posts/:id`} element={<Post />} />
+              <Route path={`/`} element={<Home />} />
+              <Route path={`/signup/`} element={<Signup />} />
+              <Route path={`/login/`} element={<Login />} />
+              <Route path={`/chat/`} element={<Chat />} />
+              <Route path={`/chatroom/:username`} element={<ChatRoom />} />
+            </Routes>
           </OnlineUsersProvider>
         </PostsProvider>
       </CookieProvider>

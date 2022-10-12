@@ -3,7 +3,7 @@ import Navbar from './Navbar';
 import { useNavigate } from "react-router-dom";
 import {OnlineUsersContext} from "./OnlineUsersContext";
 import { CookieContext } from './CookieContext';
-import { WebsocketContext } from './WebsocketContext';
+import { connect, sendMsg } from "./Index";
 
 const Chat = () => {
     const [username, setUsername] = useState(localStorage.getItem("username"));
@@ -18,7 +18,6 @@ const Chat = () => {
     }
 
 
-const {connect, sendMsg} = useContext(WebsocketContext);
 const {onlineUsers, setOnlineUsers, sortedUsers, setSortedUsers, chatHistory, setChatHistory} = useContext(OnlineUsersContext);
 
 // これを行うことで他のウィンドウにlogin/logoutなどのMessageEventを共有出来る、というか受け取る事ができる??

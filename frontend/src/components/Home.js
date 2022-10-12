@@ -4,7 +4,7 @@ import { PostsContext } from "./PostsContext";
 import Navbar from "./Navbar";
 import Chat from "./Chat";
 import { CookieContext } from './CookieContext';
-import { WebsocketContext } from './WebsocketContext';
+import { connect, sendMsg } from "./Index";
 import {OnlineUsersContext} from "./OnlineUsersContext";
 
 const Home = () => {
@@ -17,8 +17,6 @@ const Home = () => {
     const navigate = useNavigate();
     const {category} = useParams();
     const categoryList = ["science", "education", "sports", "lifehacks"]
-
-    const {connect, sendMsg} = useContext(WebsocketContext);
 
     // If user jumped to URL with category param, then set filter category with it.
     if (category && !filterCategory) {
