@@ -29,7 +29,7 @@ func main() {
 	}
 	src.CreateTables(db)
 
-	// Insert dummy data if the database is empty, otherwise not.
+	// Insert dummy posts if the database is empty, otherwise not.
 	rowCount := 0
 	postRows, err := db.Query(`
 		SELECT * FROM post
@@ -57,6 +57,7 @@ func main() {
 		}
 	}
 
+	// Insert dummy users if the database is empty, otherwise not.
 	userRowCount := 0
 	userRows, err := db.Query(`
 		SELECT * FROM user
@@ -76,6 +77,41 @@ func main() {
 	if userRowCount == 0 {
 		for _, user := range testUsers {
 			src.InsertUser(db, user)
+		}
+	}
+
+	// Insert dummy users if the database is empty, otherwise not.
+	chatRowCount := 0
+	chatRows, err := db.Query(`
+		SELECT * FROM chat_history
+	`)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer chatRows.Close()
+	for chatRows.Next() {
+		chatRowCount++
+	}
+	testChats := []src.Message{
+		{Type: 1, Body: "DummyMessage1", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage2", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage3", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage4", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage5", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage6", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage7", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage8", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage9", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage10", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage11", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage12", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage13", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage14", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+		{Type: 1, Body: "DummyMessage15", CreatorUsrName: "DummyUser1", ReceiverUsrName: "DummyUser2"},
+	}
+	if chatRowCount == 0 {
+		for _, chat := range testChats {
+			src.InsertChat(db, chat)
 		}
 	}
 
