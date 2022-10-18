@@ -6,12 +6,17 @@ just need two steps to start.
 5. You can use dummy user accounts to log in, or you can register a new account.
 <br>
    Username: DummyUser1
+   <br>
    Password: DummyPassword1
 <br>
+<br>
    Username: DummyUser2
+   <br>
    Password: DummyPassword2
 <br>
+<br>
    Username: DummyUser3
+   <br>
    Password: DummyPassword3
 
 Let me know if you got any question!
