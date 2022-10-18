@@ -4,12 +4,13 @@ just need two steps to start.
 3. In frontend folder, `npm start`
 4. You will be guided to `http://localhost:3000/log-in`
 5. You can use dummy user accounts to log in, or you can register a new account.
+<br>
    Username: DummyUser1
    Password: DummyPassword1
-------------------------------
+<br>
    Username: DummyUser2
    Password: DummyPassword2
-------------------------------
+<br>
    Username: DummyUser3
    Password: DummyPassword3
 
