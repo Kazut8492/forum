@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 
-	"forum-spa/backend/src"
 	"log"
 	"net/http"
+	"real-time-forum/backend/src"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"

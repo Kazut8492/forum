@@ -1,4 +1,4 @@
-// index.js
+// Index.js
 var socket = new WebSocket("ws://localhost:8080/ws");
 
 let connect = cb => {

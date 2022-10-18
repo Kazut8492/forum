@@ -4,7 +4,7 @@ import { PostsContext } from "./PostsContext";
 import Navbar from "./Navbar";
 import Chat from "./Chat";
 import { CookieContext } from './CookieContext';
-import { connect, sendMsg } from "./index";
+import { connect, sendMsg } from "./Index";
 import {OnlineUsersContext} from "./OnlineUsersContext";
 
 const Home = () => {

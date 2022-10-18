@@ -3,7 +3,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import ChatHistory from './ChatHistory';
 import ChatInput from './ChatInput';
 import Navbar from './Navbar';
-import { connect, sendMsg } from "./index";
+import { connect, sendMsg } from "./Index";
 import {OnlineUsersContext} from "./OnlineUsersContext";
 import {CookieContext} from "./CookieContext";
 
