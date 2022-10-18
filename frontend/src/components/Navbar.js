@@ -33,7 +33,7 @@ const Navbar = () => {
         <>
             <nav className="nav-container">
                 <ul className="nav-list">
-                    <li><Link to={`/posts/`}>Forum</Link></li>
+                    {cookieExist && <li><Link to={`/posts/`}>Forum</Link></li>}
                     {!cookieExist && <li><Link to={`/signup/`}>Sign up</Link></li>}
                     {!cookieExist && <li><Link to={`/login/`}>Login</Link></li>}
                     {cookieExist && <li><Link to={'/posts/'} onClick={handleLogoutClick}>Logout</Link></li>}

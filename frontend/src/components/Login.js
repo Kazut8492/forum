@@ -66,6 +66,11 @@ const Login = () => {
         })
     }
 
+    const handleSignupSubmit = (event) => {
+        event.preventDefault();
+        navigate("/signup/")
+    }
+
     return (
         <>
             <Navbar />
@@ -83,6 +88,9 @@ const Login = () => {
                             <hr style={{visibility: "hidden"}} />
                             <button>Log in</button>
                         </form>
+                        {/* <form onSubmit={handleSignupSubmit}>
+                            <button>Sign up</button>
+                        </form> */}
                     </div>
                 </div>
             </main>

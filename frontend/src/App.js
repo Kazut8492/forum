@@ -19,12 +19,12 @@ const App = () => {
         <PostsProvider>
           <OnlineUsersProvider>
             <Routes>
+              <Route path={`/`} element={<Login />} />
+              <Route path={`/login/`} element={<Login />} />
+              <Route path={`/signup/`} element={<Signup />} />
               <Route path={`/posts/filter/:category`} element={<Home />} />
               <Route path={`/posts/`} element={<Home />} />
               <Route path={`/posts/:id`} element={<Post />} />
-              <Route path={`/`} element={<Home />} />
-              <Route path={`/signup/`} element={<Signup />} />
-              <Route path={`/login/`} element={<Login />} />
               {/* <Route path={`/chat/`} element={<Chat />} /> */}
               <Route path={`/chatroom/:username`} element={<ChatRoom />} />
             </Routes>

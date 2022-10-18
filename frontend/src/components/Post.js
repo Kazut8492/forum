@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { useLocation, Link, useParams } from "react-router-dom";
+import { useLocation, Link, useParams, useNavigate } from "react-router-dom";
 import { PostsContext } from "./PostsContext";
 import Navbar from "./Navbar";
 import { CookieContext } from "./CookieContext";
@@ -12,6 +12,7 @@ const Post = () => {
     const [commentTitle, setCommentTitle] = useState('')
     const [commentContent, setCommentContent] = useState('')
     const params = useParams();
+    const navigate = useNavigate();
     // console.log(params)
 
     const thisPostIndex = posts.findIndex((post)=>{
@@ -98,49 +99,55 @@ const Post = () => {
         .catch(error=>console.log(error))
     }
 
-    return (
-        <>
-            <Navbar />
-            <main>
-                <div className="allposts-container">
-                    <div className="post-container">
-                        <h1>
-                            {post.Title}
-                        </h1>
-                        <h2>
-                            {post.Content}
-                        </h2>
-                        <p>category: {post.CategoryArr.join().replace(',', ' | ')}</p>
-                        <hr />
-                        {cookieExist && <>
-                            <h1>Create a new comment</h1>
-                            <form onSubmit={handleCommentSubmit}>
-                                <p>Comment title:</p>
-                                <input type="text" name="commentTitle" value={commentTitle} onChange={e=>{setCommentTitle(e.target.value)}} required />
-                                <p>Comment text:</p>
-                                <textarea value={commentContent} onChange={e=>{setCommentContent(e.target.value)}} name="commentDescription" placeholder="Enter text here..." id="commentDescription" required></textarea>
-                                <input type="submit" value="Submit comment" />
-                            </form>
+    if (!cookieExist) {
+        navigate("/login/")
+        return
+    } else {
+        return (
+            <>
+                <Navbar />
+                <main>
+                    <div className="allposts-container">
+                        <div className="post-container">
+                            <h1>
+                                {post.Title}
+                            </h1>
+                            <h2>
+                                {post.Content}
+                            </h2>
+                            <p>category: {post.CategoryArr.join().replace(',', ' | ')}</p>
                             <hr />
-                        </>}
-                        {post.Comments && post.Comments.map((comment)=>{
-                            return (<>
-                                <div className="comment">
-                                    <h4>{comment.Title}</h4>
-                                    <p>{comment.Content}</p>
-                                    <p>CommentID: {comment.ID}</p>
-                                    <p>Username: {comment.CreatorUsrName}</p>
-                                    <button disabled={cookieExist ? '': 'disabled'} onClick={(event)=>{handleDislikeClick(event, post.ID, comment.ID)}}>{comment.Dislikes ? comment.Dislikes.length : 0} 👎</button>
-                                    <button disabled={cookieExist ? '': 'disabled'} onClick={(event)=>{handleLikeClick(event, post.ID, comment.ID)}}>{comment.Likes ? comment.Likes.length : 0} 👍</button>
-                                    <hr />
-                                </div>
-                            </>)
-                        })}
+                            {cookieExist && <>
+                                <h1>Create a new comment</h1>
+                                <form onSubmit={handleCommentSubmit}>
+                                    <p>Comment title:</p>
+                                    <input type="text" name="commentTitle" value={commentTitle} onChange={e=>{setCommentTitle(e.target.value)}} required />
+                                    <p>Comment text:</p>
+                                    <textarea value={commentContent} onChange={e=>{setCommentContent(e.target.value)}} name="commentDescription" placeholder="Enter text here..." id="commentDescription" required></textarea>
+                                    <input type="submit" value="Submit comment" />
+                                </form>
+                                <hr />
+                            </>}
+                            {post.Comments && post.Comments.map((comment)=>{
+                                return (<>
+                                    <div className="comment">
+                                        <h4>{comment.Title}</h4>
+                                        <p>{comment.Content}</p>
+                                        <p>CommentID: {comment.ID}</p>
+                                        <p>Username: {comment.CreatorUsrName}</p>
+                                        <button disabled={cookieExist ? '': 'disabled'} onClick={(event)=>{handleDislikeClick(event, post.ID, comment.ID)}}>{comment.Dislikes ? comment.Dislikes.length : 0} 👎</button>
+                                        <button disabled={cookieExist ? '': 'disabled'} onClick={(event)=>{handleLikeClick(event, post.ID, comment.ID)}}>{comment.Likes ? comment.Likes.length : 0} 👍</button>
+                                        <hr />
+                                    </div>
+                                </>)
+                            })}
+                        </div>
                     </div>
-                </div>
-            </main>
-        </>
-    )
+                </main>
+            </>
+        )
+    }
+
  }
 
  export default Post;
