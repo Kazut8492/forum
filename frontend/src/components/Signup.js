@@ -79,43 +79,47 @@ const SignUp = () => {
         })
     }
 
+    if (cookieExist) {
+        navigate("/posts/")
+    } else {
+        return (
+            <>
+                <Navbar />
+                <main>
+                    <div className="allposts-container">
+                        <div className="post-container">
+                            <h1>Sign up form</h1>
+                            <form onSubmit={handleSignupSubmit}>
+                                <p>Nickname</p>
+                                <input type="text" value={nickname} onChange={e=>setNickname(e.target.value)} name="nickname" placeholder="nickname" required />
+                                {warningUsernameTaken && <h6>{warningUsernameTaken}</h6>}
+                                <p>Age</p>
+                                <input type="number" value={age} onChange={e=>setAge(e.target.value)} placeholder="age" required />
+                                <p>Gender</p>
+                                <select value={gender} onChange={e=>setGender(e.target.value)} name="gender" id="gender-select" required>
+                                    <option value="x">X</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                                <p>First Name</p>
+                                <input type="text" value={firstName} onChange={e=>setFirstName(e.target.value)} name="firstName" placeholder="first name" required />
+                                <p>Last Name</p>
+                                <input type="text" value={lastName} onChange={e=>setLastName(e.target.value)} name="lastName" placeholder="last name" required />
+                                <p>Email</p>
+                                <input type="email" value={email} onChange={e=>setEmail(e.target.value)} name="email" placeholder="email" required />
+                                {warningEmailTaken && <h6>{warningEmailTaken}</h6>}
+                                <p>Password</p>
+                                <input type="password" value={password} onChange={e=>setPassword(e.target.value)} name="password" placeholder="password" required />
+                                <hr style={{visibility: "hidden"}} />
+                                <button>Submit to signup</button>
+                            </form>
+                        </div>
+                    </div>   
+                </main>
+            </>
+        )
+    }
 
-    return (
-        <>
-            <Navbar />
-            <main>
-                <div className="allposts-container">
-                    <div className="post-container">
-                        <h1>Sign up form</h1>
-                        <form onSubmit={handleSignupSubmit}>
-                            <p>Nickname</p>
-                            <input type="text" value={nickname} onChange={e=>setNickname(e.target.value)} name="nickname" placeholder="nickname" required />
-                            {warningUsernameTaken && <h6>{warningUsernameTaken}</h6>}
-                            <p>Age</p>
-                            <input type="number" value={age} onChange={e=>setAge(e.target.value)} placeholder="age" required />
-                            <p>Gender</p>
-                            <select value={gender} onChange={e=>setGender(e.target.value)} name="gender" id="gender-select" required>
-                                <option value="x">X</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </select>
-                            <p>First Name</p>
-                            <input type="text" value={firstName} onChange={e=>setFirstName(e.target.value)} name="firstName" placeholder="first name" required />
-                            <p>Last Name</p>
-                            <input type="text" value={lastName} onChange={e=>setLastName(e.target.value)} name="lastName" placeholder="last name" required />
-                            <p>Email</p>
-                            <input type="email" value={email} onChange={e=>setEmail(e.target.value)} name="email" placeholder="email" required />
-                            {warningEmailTaken && <h6>{warningEmailTaken}</h6>}
-                            <p>Password</p>
-                            <input type="password" value={password} onChange={e=>setPassword(e.target.value)} name="password" placeholder="password" required />
-                            <hr style={{visibility: "hidden"}} />
-                            <button>Submit to signup</button>
-                        </form>
-                    </div>
-                </div>   
-            </main>
-        </>
-    )
 }
 
 export default SignUp;
