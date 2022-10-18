@@ -76,7 +76,13 @@ useEffect(() => {
             {sortedUsers && sortedUsers.map(user => {
                 if (user !== username) {
                     return (
-                        <div className="post-container" onClick={()=>{handleCardClick(user)}}>
+                        <div className="post-container" onClick={()=>{
+                            if (onlineUsers.includes(user)) {
+                                return handleCardClick(user)
+                            } else {
+                                return null;
+                            }
+                        }}>
                             {user}
                             {onlineUsers.includes(user) ? <p>online!!</p> : <p>offline</p>}
                         </div>

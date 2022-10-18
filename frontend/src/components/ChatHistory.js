@@ -39,7 +39,6 @@ const ChatHistory = (props) => {
             hasMore={hasMore}         //読み込みを行うかどうかの判定
             loader={loader}
             isReverse={true}
-            // useWindow={false}
         >
             {showMessages && showMessages.map((message, index) => {
                 if ((message.CreatorUsrName === creatorUsername && message.ReceiverUsrName === receiverUsername) || (message.CreatorUsrName === receiverUsername && message.ReceiverUsrName === creatorUsername)) {
