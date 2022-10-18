@@ -71,8 +71,7 @@ useEffect(() => {
         // navigate("/posts");
         return
     } else {
-        return(<>
-            {/* <Navbar /> */}
+        return(<div className='chat-list'>
             {sortedUsers && sortedUsers.map(user => {
                 if (user !== username) {
                     return (
@@ -90,7 +89,7 @@ useEffect(() => {
                 }
                 return null
             })}
-        </>);
+        </div>);
     }
     
 }

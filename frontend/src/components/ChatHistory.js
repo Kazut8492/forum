@@ -5,6 +5,7 @@ import InfiniteScroll  from "react-infinite-scroller"
 
 const ChatHistory = (props) => {
     const {chatHistory} = useContext(OnlineUsersContext);
+    console.log("🚀 ~ file: ChatHistory.js ~ line 8 ~ ChatHistory ~ chatHistory", chatHistory);
     const messages = chatHistory.messages;
     const creatorUsername = props.creatorUsername;
     const receiverUsername = props.receiverUsername;
@@ -29,9 +30,17 @@ const ChatHistory = (props) => {
         }
     }
 
+    useEffect(()=>{
+        if (showMessages.length > 0 ) {
+            setShowMessages([...showMessages, chatHistory.messages[chatHistory.messages.length-1]])
+        }
+    }, [chatHistory])
+
     //ロード中に表示する項目
     const loader =<div className="loader" key={0}>Loading ...</div>;
 
+    // Scroll to the bottom, otherwise all the posts would get loaded when opening the page.
+    window.scrollTo(0,document.body.scrollHeight)
 
     return(<div>
         <InfiniteScroll
