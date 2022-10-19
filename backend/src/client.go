@@ -40,7 +40,8 @@ func (c *Client) Read() {
 			log.Println(err)
 			return
 		}
-		fmt.Println(jsonMap)
+		fmt.Println("jsonMap:", jsonMap)
+		// map[creator:SYSTEM message:login receiver:DummyUser1 type:0]
 
 		intVar, _ := strconv.Atoi(jsonMap["type"])
 		// CreationTimeについては、SQL側で自動で付与する。
@@ -60,27 +61,48 @@ func (c *Client) Read() {
 			// system message about login & logout
 			fmt.Println(message)
 			if message.Body == "login" || message.Body == "signup" {
-				statement, err := db.Prepare(`
-					INSERT INTO online_users (
-						username
-					) VALUES (?)
-				`)
-				if err != nil {
-					log.Fatal(err.Error())
+				c.ID = message.ReceiverUsrName
+				fmt.Println("c.ID: ", c.ID)
+				onlineUsers := []string{}
+				for client, _ := range c.Pool.Clients {
+					if client.ID != "" {
+						onlineUsers = append(onlineUsers, client.ID)
+					}
 				}
-				defer statement.Close()
-				// number of variables have to be matched with INSERTed variables
-				statement.Exec(message.ReceiverUsrName)
+				message := Message{ReceiverUsrName: c.ID, Body: "", OnlineUsers: onlineUsers}
+				c.Pool.Broadcast <- message
+
+				// statement, err := db.Prepare(`
+				// 	INSERT INTO online_users (
+				// 		username
+				// 	) VALUES (?)
+				// `)
+				// if err != nil {
+				// 	log.Fatal(err.Error())
+				// }
+				// defer statement.Close()
+				// // number of variables have to be matched with INSERTed variables
+				// statement.Exec(message.ReceiverUsrName)
 			} else if message.Body == "logout" {
-				statement, err := db.Prepare(`
-					DELETE FROM online_users WHERE username = ?
-				`)
-				if err != nil {
-					log.Fatal(err.Error())
+				c.ID = ""
+				onlineUsers := []string{}
+				for client, _ := range c.Pool.Clients {
+					if client.ID != "" {
+						onlineUsers = append(onlineUsers, client.ID)
+					}
 				}
-				defer statement.Close()
-				// number of variables have to be matched with INSERTed variables
-				statement.Exec(message.ReceiverUsrName)
+				message := Message{ReceiverUsrName: c.ID, Body: "", OnlineUsers: onlineUsers}
+				c.Pool.Broadcast <- message
+
+				// statement, err := db.Prepare(`
+				// 	DELETE FROM online_users WHERE username = ?
+				// `)
+				// if err != nil {
+				// 	log.Fatal(err.Error())
+				// }
+				// defer statement.Close()
+				// // number of variables have to be matched with INSERTed variables
+				// statement.Exec(message.ReceiverUsrName)
 			}
 		}
 

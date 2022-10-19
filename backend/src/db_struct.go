@@ -80,6 +80,7 @@ type Message struct {
 	CreatorUsrName  string
 	ReceiverUsrName string
 	CreationTime    time.Time
+	OnlineUsers     []string `json:"onlineUsers"`
 }
 
 // type ChatHistory struct {
