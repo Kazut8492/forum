@@ -82,11 +82,11 @@ func CreateTables(db *sql.DB) {
 			FOREIGN KEY("creator_username") REFERENCES "USER"("username")
 		)`,
 
-		`CREATE TABLE IF NOT EXISTS online_users (
-			"online_id"			INTEGER NOT NULL UNIQUE,
-			"username"			TEXT NOT NULL UNIQUE,
-			PRIMARY KEY("online_id" AUTOINCREMENT)
-		)`,
+		// `CREATE TABLE IF NOT EXISTS online_users (
+		// 	"online_id"			INTEGER NOT NULL UNIQUE,
+		// 	"username"			TEXT NOT NULL UNIQUE,
+		// 	PRIMARY KEY("online_id" AUTOINCREMENT)
+		// )`,
 
 		// `CREATE TABLE IF NOT EXISTS warning (
 		// 	"warning_id"		INTEGER NOT NULL UNIQUE,

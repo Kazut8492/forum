@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import { connect, sendMsg } from "./Index";
 
 const OnlineUsersContext = createContext();
 
@@ -7,6 +8,49 @@ const OnlineUsersProvider = (props) => {
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [sortedUsers, setSortedUsers] = useState([]);
     const [chatHistory, setChatHistory] = useState({messages:[]});
+
+        // これを行うことで他のウィンドウにlogin/logoutなどのMessageEventを共有出来る、というか受け取る事ができる??
+        useEffect(() => {
+            connect((msg) => {
+                const dataObj = JSON.parse(msg.data);
+                console.log("🚀 ~ file: WebsocketContext.js ~ line 16 ~ connect ~ dataObj", dataObj)
+                if (dataObj.type === 0) {
+                    // setOnlineUsers(dataObj.onlineUsers)
+    
+                    // fetch("http://localhost:8080/online-users", {
+                    //     method:"GET",
+                    //     mode: "cors",
+                    //     cache: "no-cache",
+                    //     credentials: "include",
+                    //     headers: {
+                    //         "Content-Type":"application/json",
+                    //     },
+                    //     redirect:"manual",
+                    //     referrer:"no-referrer"
+                    // })
+                    // .then(response=>response.json())
+                    // .then(data=>{
+                    //     console.log("🚀 ~ file: WebsocketContext.js ~ line 31 ~ connect ~ data", data)
+                    //     let result = data ? data: [];
+                    //     setOnlineUsers(result)
+                    // })
+                    // .catch(error=>console.log(error))
+                } else if (dataObj.type === 1 && dataObj.CreatorUsrName !== "") {
+                    const equals = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+                    console.log("🚀 ~ file: WebsocketContext.js ~ line 42 ~ connect ~ dataObj", dataObj)
+                    console.log("New message")
+                    const currentUser = localStorage.getItem("username");
+                    const otherUser = dataObj.CreatorUsrName === currentUser ? dataObj.ReceiverUsrName : dataObj.CreatorUsrName;
+                    const result = sortedUsers.filter(user => user !== otherUser);
+                    result.push(otherUser);
+                    setSortedUsers(result);
+                    console.log("🚀 ~ file: WebsocketContext.js ~ line 222 ~ connect ~ dataObj", dataObj)
+                    if (!equals(chatHistory.messages, [...chatHistory.messages, dataObj])) {
+                        setChatHistory({messages: [...chatHistory.messages, dataObj]});
+                    }
+                }
+            });
+        });
 
     useEffect(()=>{
         fetch("http://localhost:8080/chatHistory", {
@@ -62,7 +106,6 @@ const OnlineUsersProvider = (props) => {
                     result.unshift(otherUser);
                 }
             });
-            console.log("🚀 ~ file: OnlineUsersContext.js ~ line 72 ~ useEffect ~ result", result)
             setSortedUsers(result);
 
         })

@@ -82,9 +82,3 @@ type Message struct {
 	CreationTime    time.Time
 	OnlineUsers     []string `json:"onlineUsers"`
 }
-
-// type ChatHistory struct {
-// 	ID             int
-// 	CreatorUsrName string
-// 	Content        string
-// }

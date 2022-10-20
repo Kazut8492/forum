@@ -25,7 +25,7 @@ const Chat = () => {
             const dataObj = JSON.parse(msg.data);
             console.log("🚀 ~ file: WebsocketContext.js ~ line 16 ~ connect ~ dataObj", dataObj)
             if (dataObj.type === 0) {
-                setOnlineUsers(dataObj.onlineUsers)
+                // setOnlineUsers(dataObj.onlineUsers)
 
                 // fetch("http://localhost:8080/online-users", {
                 //     method:"GET",

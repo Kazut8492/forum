@@ -384,10 +384,10 @@ func main() {
 		context.JSON(http.StatusOK, usernames)
 	}
 
-	getOnlineUsers := func(context *gin.Context) {
-		onlineUsers := src.ReadOnlineUsers(db)
-		context.JSON(http.StatusOK, onlineUsers)
-	}
+	// getOnlineUsers := func(context *gin.Context) {
+	// 	onlineUsers := src.ReadOnlineUsers(db)
+	// 	context.JSON(http.StatusOK, onlineUsers)
+	// }
 
 	router.Use(CORSMiddleware())
 	pool := src.NewPool()
@@ -406,18 +406,33 @@ func main() {
 	router.POST("/dislike", addDislike)
 	router.GET("/chatHistory", getChatHistory)
 	router.GET("/all-users", getUsernames)
-	router.GET("/online-users", getOnlineUsers)
+	// router.GET("/online-users", getOnlineUsers)
 	router.Run("localhost:8080")
 }
 
 func serveWs(pool *src.Pool, w http.ResponseWriter, r *http.Request) {
 	fmt.Println("src Endpoint Hit")
+
+	// get cookie from conn
+	cookie, err := r.Cookie("cookie")
+	fmt.Println("serveWs cookie: ", cookie)
+	if err != nil {
+		fmt.Fprintf(w, "%+v\n", err)
+	}
+
+	username := ""
+	if cookie != nil {
+		username = cookie.Value
+		fmt.Println("serveWs username: ", username)
+	}
+
 	conn, err := src.Upgrade(w, r)
 	if err != nil {
 		fmt.Fprintf(w, "%+v\n", err)
 	}
 
 	client := &src.Client{
+		ID:   username,
 		Conn: conn,
 		Pool: pool,
 	}
