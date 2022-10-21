@@ -27,10 +27,11 @@ func (pool *Pool) Start() {
 				if client.ID != "" {
 					onlineUsers = append(onlineUsers, client.ID)
 				}
-				// pool.Broadcast <- Message{ReceiverUsrName: client.ID, Body: "", OnlineUsers: onlineUsers}
+			}
+			for client, _ := range pool.Clients {
 				client.Conn.WriteJSON(Message{ReceiverUsrName: client.ID, Body: "", OnlineUsers: onlineUsers})
 			}
-			client1.Conn.WriteJSON(Message{ReceiverUsrName: client1.ID, Body: "", OnlineUsers: onlineUsers})
+			// client1.Conn.WriteJSON(Message{ReceiverUsrName: client1.ID, Body: "", OnlineUsers: onlineUsers})
 			break
 		case client1 := <-pool.Unregister:
 			leavingUser := client1.ID
@@ -43,19 +44,20 @@ func (pool *Pool) Start() {
 				if client.ID != "" {
 					onlineUsers = append(onlineUsers, client.ID)
 				}
-				// pool.Broadcast <- Message{ReceiverUsrName: client.ID, Body: "", OnlineUsers: onlineUsers}
+			}
+			for client, _ := range pool.Clients {
 				client.Conn.WriteJSON(Message{ReceiverUsrName: client.ID, Body: "", OnlineUsers: onlineUsers})
 			}
 			break
 		case message := <-pool.Broadcast:
-			onlineUsers := []string{}
+			// onlineUsers := []string{}
 			fmt.Println("Sending message to all clients in Pool")
 			for client, _ := range pool.Clients {
-				if client.ID != "" {
-					onlineUsers = append(onlineUsers, client.ID)
-				}
+				// if client.ID != "" {
+				// 	onlineUsers = append(onlineUsers, client.ID)
+				// }
 				// pool.Broadcast <- Message{ReceiverUsrName: client.ID, Body: "", OnlineUsers: onlineUsers}
-				client.Conn.WriteJSON(Message{ReceiverUsrName: client.ID, Body: "", OnlineUsers: onlineUsers})
+				// client.Conn.WriteJSON(Message{ReceiverUsrName: client.ID, Body: "", OnlineUsers: onlineUsers})
 
 				if err := client.Conn.WriteJSON(message); err != nil {
 					fmt.Println(err)

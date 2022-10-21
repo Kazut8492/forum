@@ -3,6 +3,7 @@ import { useLocation, Link, useParams, useNavigate } from "react-router-dom";
 import { PostsContext } from "./PostsContext";
 import Navbar from "./Navbar";
 import { CookieContext } from "./CookieContext";
+import Chat from "./Chat";
 
 const Post = () => {
     // const location = useLocation();
@@ -142,6 +143,7 @@ const Post = () => {
                                 </>)
                             })}
                         </div>
+                        <Chat />
                     </div>
                 </main>
             </>
