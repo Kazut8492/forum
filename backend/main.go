@@ -413,7 +413,11 @@ func main() {
 func serveWs(pool *src.Pool, w http.ResponseWriter, r *http.Request) {
 	fmt.Println("src Endpoint Hit")
 
-	// get cookie from conn
+	conn, err := src.Upgrade(w, r)
+	if err != nil {
+		fmt.Fprintf(w, "%+v\n", err)
+	}
+
 	cookie, err := r.Cookie("cookie")
 	fmt.Println("serveWs cookie: ", cookie)
 	if err != nil {
@@ -424,11 +428,6 @@ func serveWs(pool *src.Pool, w http.ResponseWriter, r *http.Request) {
 	if cookie != nil {
 		username = cookie.Value
 		fmt.Println("serveWs username: ", username)
-	}
-
-	conn, err := src.Upgrade(w, r)
-	if err != nil {
-		fmt.Fprintf(w, "%+v\n", err)
 	}
 
 	client := &src.Client{
