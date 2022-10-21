@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
-import { connect, sendMsg } from "./Index";
+import { sendMsg } from "./Index";
 
 const Navbar = () => {
     const {cookieExist, setCookieExist} = useContext(CookieContext)

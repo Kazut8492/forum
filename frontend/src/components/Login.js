@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import { CookieContext, doesHttpOnlyCookieExist } from './CookieContext';
-import { connect, sendMsg } from "./Index";
+import { sendMsg } from "./Index";
 
 
 const Login = () => {
