@@ -15,7 +15,7 @@ const OnlineUsersProvider = (props) => {
                 const dataObj = JSON.parse(msg.data);
                 console.log("🚀 ~ file: WebsocketContext.js ~ line 16 ~ connect ~ dataObj", dataObj)
                 if (dataObj.type === 0) {
-                    const onlineusers = [...dataObj.onlineUsers]
+                    const onlineusers = dataObj.onlineUsers.length !== 0? [...dataObj.onlineUsers] : [];
                     setOnlineUsers(onlineusers)
                     console.log("🚀 ~ file: OnlineUsersContext.js ~ line 19 ~ connect ~ dataObj.onlineUsers", onlineusers)
                 } else if (dataObj.type === 1 && dataObj.CreatorUsrName !== "") {
