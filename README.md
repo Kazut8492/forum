@@ -1,3 +1,6 @@
+Warning: main.go in this project is made extremely beefy by intention.
+
+
 just need two steps to start.
 1. You gotta open two terminal windows and use `cd` command to respectively go to backend and frontend folder.
 2. In frontend folder, `npm install` and wait for all the installations.
